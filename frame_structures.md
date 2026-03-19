@@ -66,5 +66,52 @@ Campi:
     * **Ordine**: indica che i frame ricevuti devono essere elaborati in ordine rigoroso.
 
 ## Livello Rete
+
+Frame IPv4
+```js
+
+const ipPacket = 
+{
+    version: 
+    length:
+    type_of_service:
+    total_length:
+    identification:
+    flags: {
+        reserved
+        dont_fragment
+        more_fragment
+    }
+    fragment_offset
+    time_to_live
+    protocol
+    header_checksum
+    source_ip
+    destination_ip
+    options
+}
+```
+Campi:
+* Versione: versione del protocollo IP usata (4 - IPv4, 6 - IPv6)
+* Length: lunghezza dell'intestazione del datagramma, misurata in parole di 32 bit
+* Type of Service: cinque sottocampi per la QoS:
+    * Tipo di precedenza
+    * Ritardo
+    * Velocità di trasmissione
+    * Affidabilità desiderata per quel pacchetto
+* Total Length: lunghezza del datagramma comprensiva di intestazione e dati (byte)
+* Identification: un interno univoco che identifica il datagramma
+* Flags: 3 bit usati per il controllo del protocollo e della frammentazione dei datagrammi
+    * Reserved: sempre settato a 0
+    * Don't Fragment: default settato a 0, se settato a 1 il pacchetto non viene frammentato, ma se sulla strada incontra un router che non supporta la non frammentazione, viene scartato.
+    * More Fragment: se settato a 0 indica che il pacchetto non è frammentato o è l'ultimo frammento del pacchetto originario; pertanto tutti gli altri suoi frammenti hanno questo bit settato a 1
+* Fragment Offset: scostamento di questo frammento nel datagramma originale in byte
+* Time to Live: tempo di vita (TTL) del pacchetto, in modo da evitare la sua persistenza sulla rete nel caso in cui non si riesca a recapitarlo al destinatario. Inizialmente era misurato in secondi, mentre ora si misura in numero di salti da nodo a nodo della rete. Ogni router ne decrementa il valore al momento della ricezione prima di inoltrarlo.
+* Protocol: specifica il protocollo di livello superiore; la lista dei codici è mantenuta dalla IANA
+* Header Checksum: campo usato per il controllo degli errori nell'header
+* Source IP: indirizzo IPv4 associato all'host del mittente
+* Destination IP: indirizzo IPv4 del o degli host destinatario
+* Options: informazioni aggiuntive e non molto usate, come info sui router o sui percorsi da seguire.
+
 ## Livello Trasporto
 ## Livello Applicazione
