@@ -90,5 +90,17 @@ Esistono diverse tecniche per prevenire e mitigare la congestione, e vengono app
 * reattive (o a ciclo chiuso)
 
 ### Controllo Proattivo
+Queste tecniche cercano di prevenire la congestione, controllando dalla sorgente o dalla destinazione.
+* Tecniche di ritrasmissione: se il mittente ritiene che un pacchetto inviata sia andato perso o danneggiato, viene ritrasmesso. Va fatta attenzione però in quanto la ritrasmissione può aumentare la congestione. Per evitare ciò, i timer di ritrasmissione devono essere progettati con cura, ottimizzando l'efficienza. Ciò viene fatto anche al livello trasporto (TCP).
+* Gestione della finestra scorrevole:
+* Politiche di eliminazione dei Pacchetti: a volte i router sono costretti a eliminare preventivamente i pacchetti per evitare la congestione.
+* Politiche di accesso: meccanismi studiati per la QoS possono aiutare a gestire la congestione, come le politiche di accesso per reti orientate alla connessione.
 
 ### Controllo Reattivo
+
+* Segnalazione al mittente
+* Pressione all'indietro
+* Segnalazione implicita
+* Segnalazione esplicita
+    * Segnalazione diretta
+    * Segnalazione all'indietro
