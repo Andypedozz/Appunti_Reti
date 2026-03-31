@@ -59,3 +59,34 @@ Altre differenze importantio sono:
 Quando un processo vuole creare una connessione verso un processo remoto, deve specificare a quale connettersi. Il trasporto non orientato alla connessione presenta lo stesso problema: a chi inviamo questo messaggio? Il metodo utilizzato consiste nel definire indirizzi di trasporto su cui io processi possono restare in ascolto. Tali endpoint (o punti terminali) si chiamano porte.
 
 ## Stabilire una connessione
+Stabilire una connession è un operazione soggetta a complicazioni dovute alle caratteristiche intrinseche delle reti.
+Innanzitutto, il fatto che la rete possa perdere, ritardare o corrompere i pacchetti rende l'instaurazione un operazione complessa.
+
+Un possibile scenario problematico si presenta se la rete è congestionata, dove agli acknowledgments che non riescono quasi mai a tornare indietro in tempo. In tal caso ogni pacchetto potrebbe subire un timeout ed essere ritrasmesso, causando maggior congestione. Se la rete usa datagrammi e i pacchetti seguono percorsi diversi, alcuni di essi potrebbero restare bloccati in zone congestionate, arrivando in ritardo o fuori sequenza.
+
+Il peggior scenario coinvolge una transazione finanziaria critica. Se i pacchetti coinvolti nella transazione vengono instradati in modo diverso, il mittente potrebbe subire il timeout e ritrasmettere i pacchetti convinto che siano persi. Tuttavia essi potrebbero rispuntare in ritardo o fuori sequenza, causando confusione e potenzialmente generando transazioni duplicate.
+
+Tomlinson propose di dotare ogni host di un orologio, che non ha bisogno di essere sincronizzato con gli altri; si assume che ogni orologio sia un contatore binario che si incrementi a intervalli regolari. Il numero di bit deve essere >= al numero di bit del numero di sequenza. Si assume inoltre che l'orologio continui a misurare il tempo anche se l'host non sta funzionando.
+Quando viene stabilita una connessione, i k bit di ordine più basso dell'orologio sono usati come primo numero di sequenza. La regione proibita mostra i tempi per cui i numeri di seq sei segmenti non sono ammissibile per essere utilizzati.
+
+Il metodo dell'orologio risolve il problema della distinzione tra segmenti duplicati da quelli nuovi. Tuttavia, poiché normalmente non ricordiamo i numeri di seq tra una connessione e l'altra, non abbiamo modo di sapere se un segmento CONNECTION REQUEST contenente un numero di seq iniziale sia un duplicato di una connessione recente.
+
+Per risolvere ciò, si è introdotto il 3 way handshake.
+Questo protocollo per l'impostazione della connessione richiede la verifica reciproca da parte dei peer che l'attuale richiesta di connessione non sia un duplicato.
+
+Procedura:
+* l'host 1 sceglie un numero di sequenza x e invia un segmento CONNECTION REQUEST contenente x all'host 2
+* l'host 2 risponde con unsegmento ACK per confermare x e annunciare il suo numero di sequenza iniziale y
+* l'host conferma la scelta del numero di sequenza iniziale dell'host 2 con il primo segmento dati inviato.
+
+## Rilasciare una connessione
+Rilasciare una connessione è più facile di stabilirla, ma ci sono comunque delle complessità.
+Il rilascio asimmetrico è utilizzato dal sistema telefonico: quando una delle due parti riattacca la connessione viene interrotta.
+
+Quando arriva un segmento DISCONNECT REQUEST, il destinatario restituisce un segmento DR e avvia un timer. All'arrivo di questo DR, il mittente originale invia un ACK e rilascia la connessione.
+Per finire quando arriva l'ACK, il ricevente rilascia la connessione.
+Il rilascio di una connessione implica la rimozione all'interno dell'entità di trasporto delle informazioni sulla connessione dalla tabella delle connessioni aperte.
+
+Se l'ACK finale viene perso, la situazione viene risolta dal timer, al cui scadere la connessione viene comunque rilasciata.
+
+## Controllo degli Errori e di Flusso
