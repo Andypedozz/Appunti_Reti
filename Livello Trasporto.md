@@ -66,6 +66,8 @@ Un possibile scenario problematico si presenta se la rete è congestionata, dove
 
 Il peggior scenario coinvolge una transazione finanziaria critica. Se i pacchetti coinvolti nella transazione vengono instradati in modo diverso, il mittente potrebbe subire il timeout e ritrasmettere i pacchetti convinto che siano persi. Tuttavia essi potrebbero rispuntare in ritardo o fuori sequenza, causando confusione e potenzialmente generando transazioni duplicate.
 
+Per affrontare tali problemi è possibile limitare la vita deri pacchetti tramite l'implementazione di reti con restrizioni, l'uso di un contatore di salti di ogni pacchetto o applicare un timestamp. Limitare la vita dei pacchetti consente di evitare che pacchetti duplicati in ritardo causino confusioni o errori.
+
 Tomlinson propose di dotare ogni host di un orologio, che non ha bisogno di essere sincronizzato con gli altri; si assume che ogni orologio sia un contatore binario che si incrementi a intervalli regolari. Il numero di bit deve essere >= al numero di bit del numero di sequenza. Si assume inoltre che l'orologio continui a misurare il tempo anche se l'host non sta funzionando.
 Quando viene stabilita una connessione, i k bit di ordine più basso dell'orologio sono usati come primo numero di sequenza. La regione proibita mostra i tempi per cui i numeri di seq sei segmenti non sono ammissibile per essere utilizzati.
 
@@ -90,3 +92,16 @@ Il rilascio di una connessione implica la rimozione all'interno dell'entità di 
 Se l'ACK finale viene perso, la situazione viene risolta dal timer, al cui scadere la connessione viene comunque rilasciata.
 
 ## Controllo degli Errori e di Flusso
+Dato che i protocolli di trasporto usano generalmente finestre grandi, esaminiamo il problema dell'immagazzinamento dei dati in un buffer. Poiché un host può avere molte connessioni, ognuna trattata separatamente, potrebbe servire una notevole quantità di buffer per le finestre scorrevoli. I buffer sono necessari sia al mittente che al destinatario: al mittente per contenere tutti i segmenti che sono stati trasmessi, ma che non hanno ancora ricevuto ACK; gli servono perchè questi potrebbero andare persi e dover essere ritrasmessi.
+
+Se la maggior parte dei segmenti ha dimensione simile, è naturale raggrupparli per dimensione identica e usare un buffer per ogni segmento. Invece se i segmenti variano notevolmente in dimensione, un insieme di buffer con dimensioni fisse genera dei problemi. Se la dimensione del singolo buffer è scelta in base al segmento con la massima dimensione possibile, si verifia uno spreco di spazio ogni volta che si riceve un segmento breve. Se la dimensione è inferiore alla dimensione massima, saranno necessari più buffer per i segmenti lunghi.
+
+Un approccio al problema della dimensione dei buffer è usare buffer con dimensioni variabili. Così si usa meglio la memoria, al prezzo di una gestione più complessa. Una terza possibilità prevede di dedicare un singolo buffer circolare di grandi dimensioni a ogni connessione.
+
+A differenza dei protocolli a finestra scorrevole, un modo per gestire l'allocazione dinamica dei buffer consiste nel separare il buffering dagli ACK.
+
+## Multiplexing
+Il multiplexing di più conversazioni su connessioni, circuiti virtuali e collegamenti fisici svolge un ruolo importante in vari livelli dello stack di rete. Nel livello trasporto, se un host ha a disposizione un solo indirizzo di rete, tutte le connessioni di trasporto del computer useranno quell indirizzo di rete. Quando arriva un segmento va solo stabilito a quale processo passarlo.
+
+## Ripristino dopo un crash
+Se host e router sono soggetti a malfunzionamenti e smettono di funzionare mentre sono in atto delle connessioni che durano molto, il ripristino può diventare un problema. Quando l'entità di trasporto è interamente interna agli host, il ripristino è banale. Le entità di trasporto prevedono sempre la perdita di segmenti e sanno come gestirla con ritrasmissioni. Più complesso è il ripristino dopo un crash dell'host. Sarebbe auspicabile che i client fossero in grado di continuare a lavorare quando i server subiscono un crash e vengono riavviati.
