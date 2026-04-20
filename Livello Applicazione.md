@@ -115,8 +115,27 @@ Caratteristiche Principali:
 * Modalità attiva e passiva:
 
 ## DNS - Domain Name System
+All'inizio Internet era piccolo: meno di 100 host popolavano la rete, perciò tutti conoscevano tutti, ma ciò non era adatto allo scalare della rete.
+
+Perciò arrivò il DNS, in sistema per introdurre nomi in ASCII per identificare gli host e separare i nomi dagli indirizzi IP. Il DNS è un sistema di denominazione gerarchico, basato su un database distribuito per la sua implementazione.
+
+Per associare un IP a un nome, le app richiamano una procedura di libreria (resolver), come getHostByName(). Con l'IP, l'app può stabilire una connessione TCP o UDP.
+
+Lo spazio dei nomi DNS è strutturato gertarchicamente, come un indirizzo di posta, cona una directory radice rappresentata da un punto (.), seguita da due gerarchie di dominio di primo livello: organizzativa e geografica.
+
+Quando un host invia una richiesta DNS, viene inoltrata al server locale, che agisce come server proxy.
+
+Il processo di risoluzione dei nomi segue i seguenti passi:
+1. Un server DNS ha una cache iniziale (hints) che contiene gli indirizzi noti dei server di nome radice, che viene aggiornato periodicamente in modo affidabile.
+2. Quando un client effettua una richiesta ricorsiva a quel server, esso elabora la richiesta usando la cache
+3. Viene effettuata una query a uno dei server radice per trovare il server autoritativo per il dominio di primo livello richiesto
+4. Viene ricevuta una risposta che indica il nameserver per quella risorsa
+5. Il server visita l'albero da destra a sinistra, passando presso i vari nameserver, fino al passo finale che restituisce l'IP dell'host in questione.
+6. L'IP della risorsa viene restituito al client.
+Il DNS è relativamente leggero e usa UDP, in modo che abbiano poco overhead. Le query superiori a 512 byte, e altre operazioni più pesanti, usano TCP per evitare problemi di consegna.
 
 ### Campi del protocollo
+
 
 ### Server
 
