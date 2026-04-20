@@ -269,10 +269,28 @@ Per difendersi da queste minacce, è essenziale adottare tecnologie e configuraz
 Come affermato in precedenza, quando si digita un URL, il browser lo analizza sintatticamente e interpreta la parte http::// e lo slash successivo come il nome DNS da cercare.
 
 ### Cookie
+I cookie sono un meccaniscmo che è stato inserito per fornire pagine differenti a utenti diversi a seconda di quello che hanno già fatto con un server di un sito.
+
+Un cookie è un piccolo file o stringa (che non supera i 4 KB), che il server può associare a un browser. I browser archiviano i cookie in una directory sul disco del client, se attivati. Essi sono solo file o stringhe, non programmi eseguibili, quindi teoricamente non possono contenere virus.
+
+Un cookie può contenere fino a 5 campi:
+* Domain: indica da dove proviene il cookie.
+* Path: è un percorso nella struttura delle directory del server che identifica quale parte della struttura di file del server può utilizzare il cookie.
+* Content: assume la forma nome = valore. Nome e valore sono due stringhe.
+* Expires: indica quando scade il cookie. Se è assente, il browser scarta il cookie alla sua chiusura; un cookie del genere si chiama "non persistente".
+* Secure: può essere impostato per indicare che il browser può restituire in cookie a un server solo se trasportato con SSL/TLS.
 
 ## HTTP
+Il protocollo HTTP è un protocollo semplice basato sul modello Request/response, implementato su TCP. Esso indica quali messaggi i client possono inviare ai server e quali risposte vengono restituite. Come SMTP, le intestazioni di domande e risposte sono formate in ASCII. I contenuti dei dati sono in un formato simile al MIME.
+
+All'inizio del web, con HTTP 1.0, dopo aver instaurato la connessione TCP, veniva inviata una singola richiesta e restituita una singola risposta. A questo punto si rilasciava la connessione. Col tempo le pagine si riempivano sempre di più contenuti di diverso tipo, e instaurare singole connessioni e rilasciarle, ad esempio per trasferire un icona, era molto costoso.
+
+Così con HTTP 1.1, si è iniziato a supportare connessioni persistenti. Così si può instaurare una connessione TCP e mantenerla per inviare più richieste e ottenere più risposte. Ciò si dice "Riutilizzo della connessione".
 
 ### Caching
+Gli utenti tornano spesso alle pagine web già viste, e pagine web correlate hanno spesso le stesse risorse, come immagini usate per la navigazione in un sito, fogli di stile comuni e script.
+
+La procedura di memorizzare in una cache delle pagine recuperate per farne un uso successivo viene detto caching. Il vantaggio è che quando una pagina è in cache, non server richiederla al server. HTTP ha un supporto integrato che aiuta i client a capire quando possono riusare pagine cachate.
 
 ## Distribuzione dei contenuti
 
