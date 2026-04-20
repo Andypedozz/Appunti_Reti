@@ -135,7 +135,13 @@ Il processo di risoluzione dei nomi segue i seguenti passi:
 Il DNS è relativamente leggero e usa UDP, in modo che abbiano poco overhead. Le query superiori a 512 byte, e altre operazioni più pesanti, usano TCP per evitare problemi di consegna.
 
 ### Campi del protocollo
-
+I campi del protocollo DNS sono fondamentali per il suo funzionamento, in quanto specificano dettagli delle richieste o risposte.
+* Identifier
+* Query/Response Flag
+* Opcode
+* AA
+* TC
+* RD
 
 ### Server
 
