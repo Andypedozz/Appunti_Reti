@@ -136,12 +136,62 @@ Il DNS è relativamente leggero e usa UDP, in modo che abbiano poco overhead. Le
 
 ### Campi del protocollo
 I campi del protocollo DNS sono fondamentali per il suo funzionamento, in quanto specificano dettagli delle richieste o risposte.
-* Identifier
-* Query/Response Flag
-* Opcode
-* AA
-* TC
-* RD
+* Identifier: un ID a 16 bit che identifica risposte e richieste
+* Query/Response Flag: campo a 4 bit che dice se il pacchetto è richiesta o risposta
+* Opcode: tipo di messaggio:
+    - 0: query standard
+    - 1: query inversa (obsoleta)
+    - 2 stato del server
+    - 3: riservato e non usato
+    - 4: messaggio di notifica
+    - 5: aggiornamento (Dynamic DNS)
+* AA: 1 bit che indica una risposta autorevole
+    - 1 se è autorevole, ossia il server che ha fornito la risposta è autorevole per il dominio in questione
+    - 0 non è autorevole
+* TC: campo a 1 bit per la troncatura. Indica che è stata inviata tramite UDP ma era più lunga di 512 byte
+* RD: campo a 1 bit chiamato "Ricorsione Desiderata", significa che il client sta chiedendo al server di attraversare l'albero per conto del client e restituire solo la risposta anziche indicare dove cercare:
+* RA: 1 bit chiamato "Ricorsione DIsponibile", in cui un server DNS indica a un client se supporta o meno la ricorsione.
+
+Poi ci sono altri campi:
+* Z: 3 bit riservati sempre a 0
+* RCode: 4 bit impostato a 0 nelle query con le seguenti opzioni:
+    0: nessun errore
+    1: errore di formato
+    2: errore del server
+    3: errore di nome
+    4: non implementato
+    5: rifiutato
+    6: il nome esiste ma non dovrebbe
+    7: esiste un record che non dovrebbe esistere
+    9: risposta non autorevole
+    10: il nome della risposta non è all'interno della zona specificata
+* QDCount: quante domande nella sezione delle domande
+* ANCount: Quante risposte nella sezione delle risposte
+* NSCount: quanti record nella sezione di autorità
+* ARCount: quanti record nella sezione aggiuntiva
+
+Una query DNS consiste in:
+* qname: nome di dominio (www.ripe.net)
+* qtype: il tipo di query, che può essere A, AAAA, MX, CNAME, PTR, SRV, TXT, NS.
+* qclass: classe della query, generalmente IN (Internet), mentre CH e HS sono poco usati
+* Flags: includono QR (Response Code), RD (Recursive Desired), EDNS Opt, DO (DNSSEC OK), AD (Authenticated Data), ecc.
+
+I record delle risorse sono associati a ogni dominio e possono includere:
+* Name
+* TTL
+* Class
+* Type
+* Value
+
+Ad esempio:
+* SOA
+* A
+* MX
+* NS
+* CNAME
+* PTR
+* HINFO
+* TXT
 
 ### Server
 
