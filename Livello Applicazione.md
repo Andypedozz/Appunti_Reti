@@ -150,7 +150,7 @@ I campi del protocollo DNS sono fondamentali per il suo funzionamento, in quanto
     - 0 non è autorevole
 * TC: campo a 1 bit per la troncatura. Indica che è stata inviata tramite UDP ma era più lunga di 512 byte
 * RD: campo a 1 bit chiamato "Ricorsione Desiderata", significa che il client sta chiedendo al server di attraversare l'albero per conto del client e restituire solo la risposta anziche indicare dove cercare:
-* RA: 1 bit chiamato "Ricorsione DIsponibile", in cui un server DNS indica a un client se supporta o meno la ricorsione.
+* RA: 1 bit chiamato "Ricorsione Disponibile", in cui un server DNS indica a un client se supporta o meno la ricorsione.
 
 Poi ci sono altri campi:
 * Z: 3 bit riservati sempre a 0
@@ -194,14 +194,74 @@ Ad esempio:
 * TXT
 
 ### Server
+I server DNS gestiscono lo spazio dei nomi DNS, diviso in zone disgiunte. Quando un resolver ha una query per un dominio, viene interrogato il server dei nomi locale.
+
+Se il dominio appartiene alla zona del server dei nomi (come ai.cs.yale.edu), viene fornito un record di risorsa autoritativo. Altrimenti, se il dominio è remoto e non ci sono info locali disponibili, il server dei nomi si rivolge al server di dominio di primo livello (TLD) per il dominio richiesto.
+
+Ad esempio, se un resolver su flits.cs.vu.nl desidera l'IP di linda.cs.yale.edu, il server dei nomi locale (cs.vu.nl) viene interrogato.
 
 ### Problemi
 
 ## World Wide Web
+Dal punto di vista degli utenti, il Web è una raccolta mondiale di documenti e pagine Web. Ogni pagina può contenere link ad altre pagine situate ovunque nel mondo.
+
+Le pagine sono visualizzate con un programma detto browser, tra cui Firefox, Explorer, Chrome. Il browser preleva la pagina richiesta, interpreta il testo e i comandi di formattazione, visualizza la pagina sullo schermo. Il contenuto può essere testo, immagini, comandi di formattazione.
+
+Il modello di base del funzionamento del Web è:
+- il browser visualizza una pagina sulla macchina client
+- Ogni pagina viene presa inviando una richiesta a uno o più server che rispondono inviando tale pagina.
+- il protocollo di domanda e risposta per catturare le pagine è un protocollo basato sul testo, che usa TCP, detto HTTP
+- Il contenuto può essere la qualsiasi: un file su disco, un interrogazione a database o l'esecuzione di un programma.
 
 ### Il lato client
+Un browser è un programma che può visualizzare una pagina e rilevare i click del mouse sugli elementi di essa.
+
+Quando fu creato il Web, divenne subito chiaro che la disponibilità di pagine che ne referenziassero altre richiededva un meccanismo per denominare e individuare le pagine.
+
+Se a ogni pagina fosse assegnato un nome univoco non vi sarebbero ambiguità nell'identificazione; tuttavia non si risolverebbe il problema.
+
+Per identificare le pagina in un modo che risolve tutti i problemi si assegna ad ognuna un URL (Uniform Resource Locator), che serve come nome mondiale per la pagina. Gli URL sono fatti da 3 parti:
+* protocollo
+* nome DNS della macchina su cui è situata la pagina
+* un percorso che indica in modo univoco la pagina specifica.
+Nel caso generale il percorso ha struttura gerarchica e rispecchia il modella della struttura gerarchica delle directory.
+
+http://www.cs.washington.edu/index.html
+Questo URL è formato da:
+- Protocollo: http
+- DNS: www.cs.washington.edu
+- percorso: index.html
+
+Quando un utente richiede una pagina, il browser esegue i seguenti passaggi:
+1. Determina l'URL
+2. Richiede al DNS l'IP del server www.cs.washington.edu
+3. il DNS risponde con 128.208.3.88
+4. Il browser esegue una connessione TCP alla porta 80 su 128.208.3.88
+5. Invia una richiesta HTTP per la pagina index.html
+6. Il server www.cs.washington.edu invia la pagina come risposta HTTP inviando, il file index.html
+7. Se la pagina include URL necessari alla visualizzazione il browser prende gli altri URL usando lo stesso procedimento.
+8. Il browser visualizza la pagina
+9. La connessione TCP viene rilasciata se non vi sono altre richieste agli stessi server per un breve periodo.
 
 ### Minacce alla sicurezza
+Le vulnerabilità, sia lato client che server, sono una preoccupazione costante per chi sviluppa e gestisce pagine web, in quanto possono compromettere riservatezza, integrità e disponibilità dei dati.
+
+Sul lato server, una delle principali minacce è l'SQL Injection.
+Gli attaccanti possono sfruttare vulnerabilità nei moduli di input dell'utente per iniettare codice SQL malevolo. Questo attacco può portare a violazione dei dati, cancellazioni o modifiche non autorizzate.
+
+Un altra minaccia è l'XSS, che si verifica quando un attaccante inietta del JavaScript malevolo in una pagina web visualizzata da altri utenti. Questo codice può rubare dati sensibili, come i cookie di sessione.
+
+Un altra minaccia è il Cross-Site Request Forgery (CSRF), che consente agli attaccanti di indurre un utente a compiere azioni involontarie su una web app su cui è autenticato.
+
+Infine c'è una minaccia detta File Inclusion, con cui gli attaccanti possono inserire file dannosi sul server, sfruttando vulnerabilità nei percorsi di inclusione dei file.
+
+Sul lato client, l'XSS rimane una minaccia rilevante, in quanto il codice viene eseguito nel contesto del browser dell'utente, potendo rubare dati locali o alterando il comportamento della pagina.
+
+Un altra minaccia è il ClickJacking, con cui gli attaccanti sovrappongo a una pagina web contenuti invisibili per indurre gli utenti a cliccare su elementi diversi da quelli che intendono.
+
+Gli attacchi Man-In-The-Middle costituiscono un altra criticità, durante la trasmissione dei dati tra client e server, con cui un attaccante può intercettare e dirottare la comunicazione, rubando dati o inserendone di dannosi.
+
+Infini il Phishing, è una minaccia costante, dove gli utenti possono essere ingannati da pagine fraudolente che sembrano legittime, portandoli a fornire dati sensibili come credenziali o carte di credito.
 
 ### Il lato server
 
