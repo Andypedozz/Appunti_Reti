@@ -67,15 +67,52 @@ Esempi:
 
 MIME consente anche di comporre messaggi multipli, inclusi allegati e varianti in diverse lingue e formati, grazie ai tipi multipart.
 
+### Consegna Finale
+
+
 ### IMAP
+IMAP (Internet Message Access Protocol) è un protocollo usato per accedere e gestire le email sul server di posta. Esso prevede IMAP ascolti sulla porta 143. Un client IMAP si connette al server e usa una serie di comandi per interagire con le mail.
+
+Prima dell'utilizzo, il client può instaurare una sessione di trasporto sicura autenticandosi sul server. Fatto ciò, può lavorare con le mailbox.
+
+IMAP è un miglioramento rispetto a POP3 (Post Office Protocol). Mentre POP3 scarica di solito i messaggi sul client, rendendo difficile la gestione delle mail su più dispositivi, IMAP mantiene i messaggi sul server e li sincronizza tra diversi device. Tuttavia POP3 è ancora in uso.
 
 ### Webmail
+Webmail è un alternativa sempre più diffusa rispetto a IMAP e SMTP per gestire la posta, consentendo agli utenti di consultare la posta tramite GUI Web. I principali provider sono Gmail, Hotmail, Yahoo. In questo modello, il software di gestione posta è fornito come servizio Web.
+
+In questa architettura il provider gestisce un server di posta che accetta messaggi tramite SMTP sulla porta 25. Lo UA è un interfaccia realizzata nel browser.
+
+Quando un utente accede allo UA, inserisce le sue credenziali, inviata al server per la convalida. Se l'autenticazione ha successo, il server recupera le caselle di posta dell'utente e genera una pagina web che ne mostra il contenuto.
+
+Per inviare un nuovo messaggio, l'utente compila un modulo web e invia i dati al server usando HTTP. Il server Web invia il messaggio tramite il sistema di consegna tradizionale.
 
 ## Protocolli di Trasporto File
 
 ### FTP
+FTP (File Transfer Protocol) è stato progettato per consentire a utentei di trasferire file in modo efficiente e affidabile da un host all'altro attraverso Internet.
+
+Esso offre due tipi di accesso: autenticato e anonimo. Quello autentivcato richiedi una coppia di account/password, mentre quello anonimo è senza restrizioni.
+
+Nel funzionamento di FTP, il client FTP stabilisce una connessione TCP con il server FTP remoto. Poi, viene effettuata l'autenticazione inviando nome utente e password come comandi FTP, permettendo poi il trasferimento di file da e verso il server.
+
+Esistono due modalità di trasferimento: modalità attiva e passiva.
+In quella attiva, la connessioni di controllo è avviata dal client mentre quella dati è avviata dal server. In quella passiva, entrambe sono avviate dal client.
 
 ### TFTP
+Il protocollo TFTP (Trivial File Transfer Protocol) è stato progettato per scopi specifici, come trasferire file rapidamente, senza necessità di tutte le funzionalità di FTP.
+
+Caratteristiche Principali:
+* Utilizzo e design: TFTP viene usato per trasferire file tra processi in una rete. Overhead minimo e non include funzionalità di sicurezza come l'autenticazione.
+* Protocollo di trasporto: progettato per usare UDP, ma può essere usato anche con altri protocolli di trasporto.
+* Facilità di implementazione: progettato per essere facile da implementare, perciò adatto a dispositivi con capacità limitate o firmware incorporato.
+* Piccole dimensioni: dimensioni ridotte.
+* Messaggi del protocollo: TFTP si basa su cinque tipi di messaggi
+    - Richiesta di lettura: inviata dal client per richiedere il trasferimento di un file dal server
+    - Richiesta di scrittura: inviata dal client per inviare un file al server
+    - Dati: inviati dal server al client e contengono blocchi di dati del file
+    - Acknowledgement: inviato dal client al server per confermare la ricezione dei dati
+    - Errore: inviato dal server al client in caso di errore nel trasferimento
+* Modalità attiva e passiva:
 
 ## DNS - Domain Name System
 
