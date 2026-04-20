@@ -263,7 +263,10 @@ Gli attacchi Man-In-The-Middle costituiscono un altra criticità, durante la tra
 
 Infini il Phishing, è una minaccia costante, dove gli utenti possono essere ingannati da pagine fraudolente che sembrano legittime, portandoli a fornire dati sensibili come credenziali o carte di credito.
 
+Per difendersi da queste minacce, è essenziale adottare tecnologie e configurazioni difensive. La santizzazione e validazione degli input è fondamentale per evitare iniezioni di codice malevolo. L'implementazione di metodi robusti di autenticazione e autorizzazione garantisce che solo gli utenti autorizzati possano accedere a risorse sensibili. L'adozione di HTTPS è cruciale per criptare iu dati e prevenire attacchi MitM, Le Content Security Policy (CSP) aiutano a prevenire attacchi XSS, specificando quali script possono essere eseguiti sul sito, mentre i cookie con l'attributo "SameSite" limitano le richieste Cross-Site. Infine, l'uso di intestazione HTTP come X-Frame-Options prevengono il ClickJacking, impedendo l'incorporazione delle pagine in iframe di terze parti.
+
 ### Il lato server
+Come affermato in precedenza, quando si digita un URL, il browser lo analizza sintatticamente e interpreta la parte http::// e lo slash successivo come il nome DNS da cercare.
 
 ### Cookie
 
