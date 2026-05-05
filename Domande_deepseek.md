@@ -1,3 +1,4 @@
+## 1 Introduzione
 ### Sezione 1.1: Scopi delle Reti e Loro Classificazione
 
 1.  Quali sono i quattro principali parametri che influenzano le prestazioni di una rete di calcolatori come sistema di telecomunicazione? (Consegna, Precisione, Tempestività, Jitter)
@@ -41,6 +42,7 @@
 
 Ecco una lista di domande d'esame basate sul Capitolo 2 (Livello Fisico) del file che hai fornito. Le domande coprono i segnali analogici/digitali, la multiplexing, le metriche di prestazione, i mezzi guidati (doppino, coassiale, fibra) e i mezzi wireless/satellitari.
 
+## 2 Livello Fisico
 ### Sezione 2.1: Basi Teoriche della Comunicazione e Trasmissione Fisica dei Dati
 
 1. Quali sono le principali differenze tra un segnale analogico e un segnale digitale? Fornisci un esempio per ciascuno.
