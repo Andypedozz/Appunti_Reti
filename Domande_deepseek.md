@@ -27,7 +27,7 @@
 ### Sezione 1.3: Esempi di Reti e Standardizzazione (Topologie, Tecnologie, Estensioni)
 
 17. Descrivi la topologia a stella (star). Qual è il suo principale punto di vulnerabilità e perché è ancora ampiamente utilizzata?
-18. Qual è il numero di collegamenti necessari per connettere n dispositivi in una topologia a maglia completa (full mesh)? \[ \frac{n(n-1)}{2} \]
+18. Qual è il numero di collegamenti necessari per connettere n dispositivi in una topologia a maglia completa (full mesh)? (n * (n - 1))/2
 19. Distingui le reti broadcast dalle reti point-to-point (unicasting).
 20. Classifica le reti in base all'estensione geografica (PAN, LAN, MAN, WAN), indicando per ciascuna un esempio d'uso tipico.
 21. Cos'è una rete a commutazione di pacchetto (packet-switched) e in cosa differisce da una a commutazione di circuito (circuit-switched)?
