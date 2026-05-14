@@ -7,4 +7,27 @@ I vantaggi di questa architettura stanno nel fatto che la maggior parte della si
 5. Un sistema distribuito è un software che esegue su un a rete di calcolatori; potremmo dire che la rete di calcolatori è il supporto fisico (o logico) che permette l'esecuzione del sistema distribuito (come ad esempio il World Wide Web che esegue sulla rete di calcolatori Internet). Nei sistemi distribuiti assume un ruolo fondamentale il middleware, ovvero parti di software che si occupano della coerenza del sistema distribuito, come allocazione delle risorse o sincronizzazione dei dati tra i vari nodi.
 
 ## Grids, Cloud e Virtualizzazione
+6. - SaaS è un modello di servizio Cloud che sta per Software as a Service, e riguarda quei fornitori di servizi che offrono solamente programmi on demand al cliente.
+   - PaaS è un modello che riguarda quei fornitori di servizi che offrono piattaforme di sviluppo ai clienti.
+   - IaaS riguarda quei fornitori di servizi che offrono il pieno controllo dell'infrastruttura sottostante, come sistema operativo, configurazione di rete, sviluppo e programmi al cliente.
+7. Le principali differenze tra un servizio connection oriented e uno connectionless sta nel fatto che quelli connection oriented si basano sul fatto che la comunicazione avvenga tramite l'instaurazione di una connessione, che venga poi utilizzata durante tutto lo scambio di dati, e poi venga chiusa, come il sistema telefonico. Un servizio connectionless invece funziona come la posta, ovvero non vi è l'instaurazione di una connessione fissa, ma la semplice spedizione di un messaggio alla volta, ognuno contenente l'indirizzo del destinatario, e i messaggi possono perciò percorrere tragitti diversi nella rete dal mittente al destinatario.
+8. La virtualizzazione è una tecnica che consente di astrarre macchine hardware, e simularne il funzionamento ma a livello software. Questo porta numerosi benefici, come per le macchine virtuali che implementano degli spazi computazionali isolati, e il cui spostamento è facile quanto spostare un file. Tali ambienti virtualizzati sono incapsulati, in quanto un processo che esegue su una macchina virtuale non può uscire da quello spazio di memoria, isolando eventuali guasti.
+
+11. Il principio di incapsulamento nei modelli a strati è necessario a gestire la complessità dello stack tecnologico che abilita le reti di calcolatori odierne. Di fatti, ogni strato dei modelli come OSI o TCP/IP ha uno specifico insieme di funzioni, che offrono ai livelli superiori come servizi pronti e i cui dettagli sono nascosti. Tipicamente ogni livello aggiunge ai dati ricevuti dal livello superiore un header, e talvolta Tail, che servono ai livelli inferiori per poter gestire la trasmissione correttamente, e all'arrivo al nodo ricevente per poter decapsulare il messaggio e ottenere i dati desiderati.
+12. Le funzioni principali del livello Fisico sono:
+    * ricevere un flusso di bit codificato dal livello datalink
+    * tradurli in segnali fisici adatti al mezzo fisico, che sia fibra, rame o onde radio.
+    * Definire la topologia della rete
+    * Gestire la sincronizzazione dei bit e la gestione del flusso.
+    Le funzioni del livello Datalink sono:
+    * Indirizzamento hardware (MAC Address)
+    * Correzione degli errori
+    * Controllo dell'accesso al mezzo
+    * Gestione dei collegamenti punto-punto
+    Le funzioni del livello Rete sono:
+    * Indirizzamento logico (IP Address)
+    * Instradamento dei pacchetti tra diverse LAN (Routing)
+    * Gestione della congestione
+
+
 
