@@ -75,6 +75,30 @@ Per selezionare il percorso migliore gli algoritmi usano delle metriche: come lu
 
 Inizializziamo la rete alimentando tutti i nodi al tempo t_0: in questo stato ogni nodo ha una conoscenza locale, ossia sa solo il proprio indirizzo e ignora totalmente la topologia delle rete e le distanze dagli altri.
 
+Ad, esempio prendiamo una rete del genere:
+![alt text](image.png)
+Avremo:
+
+Tabella A:
+A: 0
+
+Tabella C:
+C: 0
+
+Tabella D:
+D: 0
+
+Successivamente, ogni nodo invierà la propria tabella delle distanze ai nodi adiacenti, e ogni nodo aggiornerà la propria conoscenza locale calcolando le distanze minime per raggiungere gli altri nodi.
+Cosa succede se un link subisce un guasto?
+In distance vector esiste il problema del cosiddetto Count to Infinity.
+Supponiamo che cada il link B-C, che ha costo 3. A conosce ancora che C è raggiungibile da B con costo 3. Allora B aggiorna la sua tabella calcolando che C è raggiungibile con costo 1 + 3 (costo B-A + costo A-C). Ma allora, successivamente A aggiorna la sua tabella, in quanto A sapeva che C era raggiungibile da B, e così via inizia il conteggio a infinito.
+Vi sono due soluzioni a questo problema: Split Horizon e Poison Reverse.
+La prima stabilisce che se un nodo A sta instradando pacchetti per una destinazione Z  attraverso un nodo intermedio B, non è logico che quest ultimo B tenti di raggiungere Z attraverso A, per cui non c'è ragione per cui A debba annunciare a B che Z ha una distanza più breve da A.
+Split Horizon con Poison Reverse aggiunge il fatto che le distanze che sono instradate attraverso il link caduto saranno impostate a Infinito.
+
+## Link State
+
+
 ## Congestione
 La congestione della rete è il fenomeno in cui i nodi immettono nella rete più pacchetti di quanti essa ne riesca a consegnare a destinazione; oltre che per quantità di pacchetti, essa può avere altre cause come:
 * diversi flussi attraversano la stessa linea e i pacchetti che arrivano a un router non riescono a essere processati
