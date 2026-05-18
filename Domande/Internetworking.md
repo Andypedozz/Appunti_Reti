@@ -1,7 +1,3 @@
-Ecco il file "Internetworking" riorganizzato **esattamente nello stesso stile** dei capitoli precedenti, con domande suddivise per sezione e sottosezione.
-
----
-
 ## Internetworking
 
 ### Sezione 6.1 – Protocolli di Controllo

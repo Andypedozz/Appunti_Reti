@@ -1,7 +1,3 @@
-Ecco il file "Livello Rete" riorganizzato **esattamente nello stesso stile** dei tuoi esempi (Datalink e Tecnologie di Accesso), con domande suddivise per sezione e sottosezione.
-
----
-
 ## Livello Rete
 
 ### Sezione 5.1 – Problemi Architetturali dello Stato Rete

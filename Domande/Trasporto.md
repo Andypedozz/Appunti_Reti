@@ -1,7 +1,3 @@
-Ecco il file "Livello Trasporto" riorganizzato **esattamente nello stesso stile** dei capitoli precedenti, con domande suddivise per sezione e sottosezione.
-
----
-
 ## Livello Trasporto
 
 ### Sezione 7.1 – Descrizione dei Servizi di Trasporto

@@ -1,7 +1,3 @@
-Ecco il file "Livello Applicazione" riorganizzato **esattamente nello stesso stile** dei capitoli precedenti, con domande suddivise per sezione e sottosezione.
-
----
-
 ## Livello Applicazione
 
 ### Sezione 8.1 – Posta Elettronica: MIME, SMTP, IMAP, POP3

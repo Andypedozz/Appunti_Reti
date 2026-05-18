@@ -1,7 +1,3 @@
-Ecco il file "Sicurezza delle Reti" riorganizzato **esattamente nello stesso stile** dei capitoli precedenti, con domande suddivise per sezione e sottosezione.
-
----
-
 ## Sicurezza delle Reti
 
 ### Sezione 9.1 – Controllo degli Accessi
