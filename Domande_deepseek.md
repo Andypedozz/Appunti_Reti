@@ -40,8 +40,6 @@
 25. Qual è il ruolo dell'ICANN e dell'IANA nella gestione di Internet? (Assegnazione indirizzi IP, gestione DNS, parametri protocolli).
 26. Cosa sono i RIR (Regional Internet Registries)? Fai un esempio di un RIR europeo. (RIPE NCC)
 
-Ecco una lista di domande d'esame basate sul Capitolo 2 (Livello Fisico) del file che hai fornito. Le domande coprono i segnali analogici/digitali, la multiplexing, le metriche di prestazione, i mezzi guidati (doppino, coassiale, fibra) e i mezzi wireless/satellitari.
-
 ## 2 Livello Fisico
 ### Sezione 2.1: Basi Teoriche della Comunicazione e Trasmissione Fisica dei Dati
 

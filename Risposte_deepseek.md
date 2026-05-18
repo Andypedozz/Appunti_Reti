@@ -10,11 +10,23 @@ I vantaggi di questa architettura stanno nel fatto che la maggior parte della si
 6. - SaaS è un modello di servizio Cloud che sta per Software as a Service, e riguarda quei fornitori di servizi che offrono solamente programmi on demand al cliente.
    - PaaS è un modello che riguarda quei fornitori di servizi che offrono piattaforme di sviluppo ai clienti.
    - IaaS riguarda quei fornitori di servizi che offrono il pieno controllo dell'infrastruttura sottostante, come sistema operativo, configurazione di rete, sviluppo e programmi al cliente.
-7. Le principali differenze tra un servizio connection oriented e uno connectionless sta nel fatto che quelli connection oriented si basano sul fatto che la comunicazione avvenga tramite l'instaurazione di una connessione, che venga poi utilizzata durante tutto lo scambio di dati, e poi venga chiusa, come il sistema telefonico. Un servizio connectionless invece funziona come la posta, ovvero non vi è l'instaurazione di una connessione fissa, ma la semplice spedizione di un messaggio alla volta, ognuno contenente l'indirizzo del destinatario, e i messaggi possono perciò percorrere tragitti diversi nella rete dal mittente al destinatario.
+
+7. I modelli di deploy Public, Private e Hybrid differiscono in base al grado di disponibilità che offrono: la Public viene messa a disposizione tramite internet a una larga fetta di utenti: è flessibile, con costi limitati, scalabile, ma pecca in sicurezza, di fatti è adibita per utenti che non devono gestire dati sensibili.
+Private è un modello di deploy mirato per una singola organizzazione, ma ha costi maggiori. Quella hybrid è un modello che combina più modelli, come ad esempio un implementazione che esegue attività non critiche come sviluppo e testing su un cloud pubblico, mentre le attività come gestione di dati sensibili vengono effettuate su un cloud privato.
+
 8. La virtualizzazione è una tecnica che consente di astrarre macchine hardware, e simularne il funzionamento ma a livello software. Questo porta numerosi benefici, come per le macchine virtuali che implementano degli spazi computazionali isolati, e il cui spostamento è facile quanto spostare un file. Tali ambienti virtualizzati sono incapsulati, in quanto un processo che esegue su una macchina virtuale non può uscire da quello spazio di memoria, isolando eventuali guasti.
 
+9. Una rete Grid è un insieme di dispositivi che collaborano condividendo risorse a un compito solitamente computazionalmente costoso e pesante. In questo tipo di rete si distinguono 3 ruoli:
+* Nodo di controllo: un server che amministra la rete e tiene conto delle risorse
+* Provider: un computer che mette a disposizione le proprie risorse al pool di rete
+* Client: un computer che utilizza le risorse messe a disposizione sulla rete per effettuare processing.
+Il software che si occupa di mantenere traccia coerente delle risorse disponibili sulla rete è il middleware.
+
 11. Il principio di incapsulamento nei modelli a strati è necessario a gestire la complessità dello stack tecnologico che abilita le reti di calcolatori odierne. Di fatti, ogni strato dei modelli come OSI o TCP/IP ha uno specifico insieme di funzioni, che offrono ai livelli superiori come servizi pronti e i cui dettagli sono nascosti. Tipicamente ogni livello aggiunge ai dati ricevuti dal livello superiore un header, e talvolta Tail, che servono ai livelli inferiori per poter gestire la trasmissione correttamente, e all'arrivo al nodo ricevente per poter decapsulare il messaggio e ottenere i dati desiderati.
-12. Le funzioni principali del livello Fisico sono:
+
+12. Le principali differenze tra un servizio connection oriented e uno connectionless sta nel fatto che quelli connection oriented si basano sul fatto che la comunicazione avvenga tramite l'instaurazione di una connessione, che venga poi utilizzata durante tutto lo scambio di dati, e poi venga chiusa, come il sistema telefonico. Un servizio connectionless invece funziona come la posta, ovvero non vi è l'instaurazione di una connessione fissa, ma la semplice spedizione di un messaggio alla volta, ognuno contenente l'indirizzo del destinatario, e i messaggi possono perciò percorrere tragitti diversi nella rete dal mittente al destinatario.
+
+13. Le funzioni principali del livello Fisico sono:
     * ricevere un flusso di bit codificato dal livello datalink
     * tradurli in segnali fisici adatti al mezzo fisico, che sia fibra, rame o onde radio.
     * Definire la topologia della rete
@@ -29,5 +41,48 @@ I vantaggi di questa architettura stanno nel fatto che la maggior parte della si
     * Instradamento dei pacchetti tra diverse LAN (Routing)
     * Gestione della congestione
 
+14. Il modello TCP/IP è costituito da 4 layer:
+   * Application
+   * Transport
+   * Internet
+   * Network Interface
+I livelli Application e Network Interface corrispondono, nel modello OSI, ai livelli Applicazione, Presentazione e Sessione, e ai livelli Datalink e Fisico.
+15. Il ruolo del protocollo IP è quello di identificare a livello logico i nodi sulla rete, e di effettuare l'instradamento dei pacchetti tra LAN diverse. Il protocollo TCP invece lavora al livello 4 (trasporto), e si occupa di gestire la trasmissione dei segmenti end-to-end, da una LAN a un altra, garantendo la consegna, il corretto ordinamento dei pacchetti, la correzione degli errori, mitigare eventuali congestioni, e di effettuare anche multiplexing e demultiplexing, delle connessioni, che potrebbero essere multiple anche tra due singoli nodi, identificando i vari processi sulle macchine tramite le porte.
+16. Le principali differenze tra il modello OSI e TCP/IP sono che il modello OSI è un modello teorico che sviscera in modo più dettagliato la struttura dello stack di rete, mentre il modello TCP/IP è un modello più concreto che riflette la costruzione reale che le reti hanno subito nel tempo.
+
+17. La topologia a stella è una topologia di rete che prevede che i nodi siano connessi gli uni con gli altri tramite un dispositivo centrale, che sia un hub, uno switch, o un router. Il suo principale punto di vulnerabilità è proprio il device centrale, in quanto se subisse un guasto tutta la rete sarebbe compromessa. è ancora utilizzata perchè ogni device necessita di una singola porta per comunicare con la rete, è facile installarla, e presenta un facile rilevamento dei guasti.
+
+18. Il numero di collegamenti necessari per connettere n dispositivi in una rete mesh completa è dato da n * (n - 1) / 2.
+
+19. 
+
+20. Le reti seguono la seguente classificazione in base alla estensione geografica:
+   * PAN: le reti PAN sono reti che coinvolgono nodi a distanze nel range di pochi metri, e comprendono ad esempio le reti di dispositivi indossabili.
+   * LAN: le reti LAN si estendono nel range di poche centinaia di metri, e costituiscono le reti domestiche, reti aziendali o reti scolastiche ad esempio.
+   * MAN: le reti MAN stanno per Metropolitan Area Network e si estendono nel raggio del territorio cittadino, quindi qualche km.
+   * WAN: le reti WAN comprendono l'interconnessione di diverse LAN e MAN, e si estendono per diversi km, includendo regioni o intere nazioni.
+
+21. Una rete a commutazione di pacchetto è una rete che prevede che l'invio di ogni pacchetto possa seguire percorsi diversi in maniera indipendente, mentre una rete a commutazione di circuito prevede che l'instradamento dei pacchetti di una certa connessione segua lo stesso percorso.
+
+## Livello Fisico
+1. Le principali differenze tra un segnale analogico e uno digitale stanno nel fatto che un segnale analogico segue una forma d'onda continua nel tempo e nel valore del segnale. Il segnale è limitato in un range di valori ma può assumere infiniti valori in quell'intervallo. Un segnale digitale invece è un segnale discreto nel tempo e nei valori assunti.
+2. Un'onda sinusoidale è descritta da 3 parametri:
+   * Ampiezza: l'ampiezza rappresenta l'energia del segnale, identificando minimi e massimi della sinusoide
+   * Frequenza: indica la velocità di variazione del valore del segnale
+   * Fase: indica lo spostamento nel tempio della sinusoide rispetto al tempo 0.
+3. Per larghezza di banda si possono intendere due significati: se si parla di un segnale analogico, la larghezza di banda rappresenta il range di frequenze che il segnale utilizza (in Hertz), mentre se si parla di un segnale digitale si parla del numero di bit al secondo che il segnale può trasportare.
+
+4. 
+
+7. Il multiplexing è la tecnica con cui si abilità la condivisione di un mezzo fisico e lo si mette a disposizione di più dispositivi che voglio trasmettere segnali su quel mezzo. è importante nelle reti di telecomunicazione per il semplice fatto che sarebbe ingestibili strutturare reti con una moltitudine di nodi se fosse necessario creare mezzi di comunicazione dedicati per ogni nodo.
+8. Il multiplexer è quel componente hardware o software che si occupa di prendere messaggi da più sorgenti e trasmetterle su un singolo canale, mentre il demultiplexer fa l'opposto, ovvero prende messaggi da un mezzo condiviso, e li smista verso più riceventi.
+
+9. La larghezza di banda rappresenta la capacità massima, ideale di un mezzo trasmissivo, una sorta di limite superiore. Il Throughput invece è la quantità di informazioni effettivmente trasportate in un certo lasso di tempo. Potremmo paragonarlo alla larghezza di un tubo e all'effettiva quantità di flusso d'acqua che ci passa in un certo momento.
+
+10. I 4 contributi al ritardo totale di una rete sono:
+   * tempo di propagazione: è il tempo 
+   * tempo di trasmissione
+   * tempo di accomodamento
+   * ritardo di elaborazione
 
 
