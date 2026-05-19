@@ -1,64 +1,292 @@
-## Introduzione
-1. I quattro principali parametri che influenzano le prestazioni di una rete sono la sua capacità di recapitare un messaggio al corretto destinatario o destinatari, la celerità ed efficienza con cui il messaggio viene recapitato e il jitter, ovvero un valore di quanto è variante la latenza della comunicazione durante la trasmissione dei pacchetti.
-2. La comunicazione Simplex è una modalità di comunicazione che utilizza tutta la banda disponibile sul mezzo in quanto un nodo è sempre mittente e l'altro sempre ricevente, senza bisogno di alcun feedback dal ricevente, come nel caso della televisione; la modalità half-duplex consente agli attori di cambiare il loro ruolo tra mittente e ricevente, ma non è possibile ricevere e trasmettere simultaneamente, come nei walkie-talkie; la comunicazione in full duplex consente invece di ricevere e trasmettere simultaneamente, come nelle chiamate telefoniche, ma non è possibile utilizzare tutta la larghezza di banda per la comunicazione a causa dei controlli necessari alla gestione della comunicazione.
-3. Il paradigma Client Server è un modello di comunicazione che sta alla base di Internet, che prevede la presenza di uno o più Client, che effettuano delle richieste di risorse di vario tipo, e restano in attesa di una Risposta da parte di un computer più potente detto Server, che in assenza di richieste attende, e all'occorrenza effettua elaborazioni o fornisce risorse ai client.
-I vantaggi di questa architettura stanno nel fatto che la maggior parte della sicurezza e intelligenza sta in un singolo Nodo, ovvero il server, e aumentare le risorse della rete corrisponde ad aumentare le risorse del server; il problema principale sta nel fatto che se accade un guasto al server, tutta la rete è compromessa; nel modello P2P invece non vi sono ruoli fissi tra Client e Server, ma tutti i nodi sono interconnessi ma indipendenti, con loro sicurezza e potenza computazionale; il principale vantaggio è che se avviene un guasto a un nodo, la rete non è compromessa; uno svantaggio è che la scalabilità della rete non è centralizzata come in Client Server.
-5. Un sistema distribuito è un software che esegue su un a rete di calcolatori; potremmo dire che la rete di calcolatori è il supporto fisico (o logico) che permette l'esecuzione del sistema distribuito (come ad esempio il World Wide Web che esegue sulla rete di calcolatori Internet). Nei sistemi distribuiti assume un ruolo fondamentale il middleware, ovvero parti di software che si occupano della coerenza del sistema distribuito, come allocazione delle risorse o sincronizzazione dei dati tra i vari nodi.
+## Sezione 1.1: Scopi delle Reti e Loro Classificazione
 
-## Grids, Cloud e Virtualizzazione
-6. - SaaS è un modello di servizio Cloud che sta per Software as a Service, e riguarda quei fornitori di servizi che offrono solamente programmi on demand al cliente.
-   - PaaS è un modello che riguarda quei fornitori di servizi che offrono piattaforme di sviluppo ai clienti.
-   - IaaS riguarda quei fornitori di servizi che offrono il pieno controllo dell'infrastruttura sottostante, come sistema operativo, configurazione di rete, sviluppo e programmi al cliente.
+**1. Quali sono i quattro principali parametri che influenzano le prestazioni di una rete di calcolatori come sistema di telecomunicazione?**
 
-7. I modelli di deploy Public, Private e Hybrid differiscono in base al grado di disponibilità che offrono: la Public viene messa a disposizione tramite internet a una larga fetta di utenti: è flessibile, con costi limitati, scalabile, ma pecca in sicurezza, di fatti è adibita per utenti che non devono gestire dati sensibili.
-Private è un modello di deploy mirato per una singola organizzazione, ma ha costi maggiori. Quella hybrid è un modello che combina più modelli, come ad esempio un implementazione che esegue attività non critiche come sviluppo e testing su un cloud pubblico, mentre le attività come gestione di dati sensibili vengono effettuate su un cloud privato.
+I quattro parametri sono:
+1. **Consegna**: il sistema deve consegnare le informazioni al corretto destinatario, e solo a esso.
+2. **Precisione**: il sistema deve consegnare i dati senza alterazioni; in caso di errori, deve essere in grado di ripristinarne la correttezza.
+3. **Tempestività**: il sistema deve garantire la consegna in tempi utili; dati che arrivano in ritardo potrebbero essere inutili.
+4. **Jitter**: è la variazione del ritardo con cui i dati giungono al destinatario.
 
-8. La virtualizzazione è una tecnica che consente di astrarre macchine hardware, e simularne il funzionamento ma a livello software. Questo porta numerosi benefici, come per le macchine virtuali che implementano degli spazi computazionali isolati, e il cui spostamento è facile quanto spostare un file. Tali ambienti virtualizzati sono incapsulati, in quanto un processo che esegue su una macchina virtuale non può uscire da quello spazio di memoria, isolando eventuali guasti.
+---
 
-9. Una rete Grid è un insieme di dispositivi che collaborano condividendo risorse a un compito solitamente computazionalmente costoso e pesante. In questo tipo di rete si distinguono 3 ruoli:
-* Nodo di controllo: un server che amministra la rete e tiene conto delle risorse
-* Provider: un computer che mette a disposizione le proprie risorse al pool di rete
-* Client: un computer che utilizza le risorse messe a disposizione sulla rete per effettuare processing.
-Il software che si occupa di mantenere traccia coerente delle risorse disponibili sulla rete è il middleware.
+**2. Descrivi le differenze tra comunicazione Simplex, Half-Duplex e Full-Duplex, fornendo un esempio per ciascuna.**
 
-11. Il principio di incapsulamento nei modelli a strati è necessario a gestire la complessità dello stack tecnologico che abilita le reti di calcolatori odierne. Di fatti, ogni strato dei modelli come OSI o TCP/IP ha uno specifico insieme di funzioni, che offrono ai livelli superiori come servizi pronti e i cui dettagli sono nascosti. Tipicamente ogni livello aggiunge ai dati ricevuti dal livello superiore un header, e talvolta Tail, che servono ai livelli inferiori per poter gestire la trasmissione correttamente, e all'arrivo al nodo ricevente per poter decapsulare il messaggio e ottenere i dati desiderati.
+| Modalità | Direzione | Esempio | Vantaggio/Svantaggio |
+|----------|-----------|---------|----------------------|
+| **Simplex** | Una sola direzione (sempre mittente → sempre destinatario) | Televisione (TV trasmittente → apparecchio ricevente) | Vantaggio: nessun problema di traffico; svantaggio: nessun feedback |
+| **Half-Duplex** | Entrambe le direzioni, ma non contemporaneamente | Walkie-talkie | Richiede alternanza ("passo la palla") |
+| **Full-Duplex** | Entrambe le direzioni contemporaneamente | Telefonata | Vantaggio: comunicazione simultanea; svantaggio: non tutta la banda è sfruttata per singolo flusso |
 
-12. Le principali differenze tra un servizio connection oriented e uno connectionless sta nel fatto che quelli connection oriented si basano sul fatto che la comunicazione avvenga tramite l'instaurazione di una connessione, che venga poi utilizzata durante tutto lo scambio di dati, e poi venga chiusa, come il sistema telefonico. Un servizio connectionless invece funziona come la posta, ovvero non vi è l'instaurazione di una connessione fissa, ma la semplice spedizione di un messaggio alla volta, ognuno contenente l'indirizzo del destinatario, e i messaggi possono perciò percorrere tragitti diversi nella rete dal mittente al destinatario.
+---
 
-13. Le funzioni principali del livello Fisico sono:
-    * ricevere un flusso di bit codificato dal livello datalink
-    * tradurli in segnali fisici adatti al mezzo fisico, che sia fibra, rame o onde radio.
-    * Definire la topologia della rete
-    * Gestire la sincronizzazione dei bit e la gestione del flusso.
-    Le funzioni del livello Datalink sono:
-    * Indirizzamento hardware (MAC Address)
-    * Correzione degli errori
-    * Controllo dell'accesso al mezzo
-    * Gestione dei collegamenti punto-punto
-    Le funzioni del livello Rete sono:
-    * Indirizzamento logico (IP Address)
-    * Instradamento dei pacchetti tra diverse LAN (Routing)
-    * Gestione della congestione
+**3. Spiega il paradigma Client-Server, elencando almeno due vantaggi e due svantaggi rispetto all'architettura Peer-to-Peer (P2P).**
 
-14. Il modello TCP/IP è costituito da 4 layer:
-   * Application
-   * Transport
-   * Internet
-   * Network Interface
-I livelli Application e Network Interface corrispondono, nel modello OSI, ai livelli Applicazione, Presentazione e Sessione, e ai livelli Datalink e Fisico.
-15. Il ruolo del protocollo IP è quello di identificare a livello logico i nodi sulla rete, e di effettuare l'instradamento dei pacchetti tra LAN diverse. Il protocollo TCP invece lavora al livello 4 (trasporto), e si occupa di gestire la trasmissione dei segmenti end-to-end, da una LAN a un altra, garantendo la consegna, il corretto ordinamento dei pacchetti, la correzione degli errori, mitigare eventuali congestioni, e di effettuare anche multiplexing e demultiplexing, delle connessioni, che potrebbero essere multiple anche tra due singoli nodi, identificando i vari processi sulle macchine tramite le porte.
-16. Le principali differenze tra il modello OSI e TCP/IP sono che il modello OSI è un modello teorico che sviscera in modo più dettagliato la struttura dello stack di rete, mentre il modello TCP/IP è un modello più concreto che riflette la costruzione reale che le reti hanno subito nel tempo.
+**Client-Server**: il client (processo attivo) genera richieste di servizi; il server (processo reattivo) esegue computazioni solo a seguito di richieste.
 
-17. La topologia a stella è una topologia di rete che prevede che i nodi siano connessi gli uni con gli altri tramite un dispositivo centrale, che sia un hub, uno switch, o un router. Il suo principale punto di vulnerabilità è proprio il device centrale, in quanto se subisse un guasto tutta la rete sarebbe compromessa. è ancora utilizzata perchè ogni device necessita di una singola porta per comunicare con la rete, è facile installarla, e presenta un facile rilevamento dei guasti.
+| Vantaggi | Svantaggi |
+|----------|------------|
+| Gestione dati (backup) facile ed economica | Se il server si guasta, l'intera rete è inattiva |
+| Prestazioni migliori (server più potente) | Costo di manutenzione del server elevato |
+| Sicurezza più facile da gestire | Aggiornamenti costosi per gestire più richieste |
+| Scalabilità limitata solo dalle risorse del server | |
 
-18. Il numero di collegamenti necessari per connettere n dispositivi in una rete mesh completa è dato da n * (n - 1) / 2.
+---
 
-19. 
+**4. In che modo il modello Peer-to-Peer (P2P) puro gestisce l'assenza di un server centrale per la connessione tra i nodi?**
 
-20. Le reti seguono la seguente classificazione in base alla estensione geografica:
-   * PAN: le reti PAN sono reti che coinvolgono nodi a distanze nel range di pochi metri, e comprendono ad esempio le reti di dispositivi indossabili.
-   * LAN: le reti LAN si estendono nel range di poche centinaia di metri, e costituiscono le reti domestiche, reti aziendali o reti scolastiche ad esempio.
-   * MAN: le reti MAN stanno per Metropolitan Area Network e si estendono nel raggio del territorio cittadino, quindi qualche km.
-   * WAN: le reti WAN comprendono l'interconnessione di diverse LAN e MAN, e si estendono per diversi km, includendo regioni o intere nazioni.
+Nel P2P puro, non essendoci un server centrale, viene integrata una **Overlay network virtuale** (rete sovrapposta virtuale), con la quale i nodi formano una sottorete rispetto alla rete fisica principale. L'overlay è utilizzata principalmente per **indicizzare e mappare i nodi**, in modo da conoscere la topologia della rete.
 
-21. Una rete a commutazione di pacchetto è una rete che prevede che l'invio di ogni pacchetto possa seguire percorsi diversi in maniera indipendente, mentre una rete a commutazione di circuito prevede che l'instradamento dei pacchetti di una certa connessione segua lo stesso percorso.
+---
+
+**5. Qual è la principale differenza tra un "sistema distribuito" e una semplice "rete di calcolatori"?**
+
+La differenza sta nel **middleware**. In un sistema distribuito, la garanzia della comunicazione e la coerenza delle informazioni scambiate è compito del middleware (es. DBMS, Web Server). Una rete di calcolatori è la mera connessione fisica e logica tra dispositivi; il sistema distribuito si appoggia sulla rete per svolgere un compito specifico.
+
+*Esempio*: Internet è una rete di calcolatori; il World Wide Web è un sistema distribuito che si appoggia su Internet.
+
+---
+
+## Sezione 1.1.2: Grids, Cloud e Virtualizzazione
+
+**6. Definisci i tre principali modelli di servizio del Cloud Computing: SaaS, PaaS e IaaS. In quale di questi l'azienda cliente ha il pieno controllo sulle applicazioni ma non sull'infrastruttura sottostante?**
+
+| Modello | Significato | Controllo del cliente |
+|---------|-------------|------------------------|
+| **SaaS** | Software-as-a-Service | Solo sulle funzionalità del software (configurazione identità e accessi) |
+| **PaaS** | Platform-as-a-Service | **Pieno controllo sulle applicazioni e impostazioni di configurazione** (non su rete, server, OS, storage) |
+| **IaaS** | Infrastructure-as-a-Service | Gestione di networking, storage e risorse di calcolo (non su infrastruttura fisica sottostante) |
+
+La risposta alla domanda è **PaaS**.
+
+---
+
+**7. Confronta i modelli di deployment Public Cloud, Private Cloud e Hybrid Cloud, evidenziando vantaggi e svantaggi in termini di sicurezza e costi.**
+
+| Modello | Descrizione | Vantaggi | Svantaggi |
+|---------|-------------|----------|------------|
+| **Public Cloud** | Disponibile via internet per il pubblico, proprietà di un'organizzazione | Flessibile, affidabile, altamente scalabile, costi bassi | Scarsa sicurezza, bassa personalizzazione |
+| **Private Cloud** | Disponibile solo per un'organizzazione, gestito On Premise | Maggiore controllo su dati e accessi, protezione privacy | Costo elevato, poca scalabilità |
+| **Hybrid Cloud** | Combinazione di due o più modelli (es. pubblico + privato) | Salvaguardia risorse critiche, efficienza in costi e risorse, portabilità dei dati | Complessità di gestione |
+
+**Community Cloud**: modello intermedio (più sicurezza del pubblico, costi ridotti rispetto al privato), consigliato per enti di ricerca e aziende consociate.
+
+---
+
+**8. Cosa si intende per Virtualizzazione? Descrivi il concetto di "incapsulamento" in questo contesto.**
+
+La **virtualizzazione** è la capacità di astrarre hardware e software su una sola macchina fisica, permettendo l'esecuzione di più sistemi operativi e applicazioni su un singolo host.
+
+**Incapsulamento**: è uno dei concetti chiave della virtualizzazione. Significa che l'intero stato di una macchina virtuale (VM) viene salvato su file. Ciò consente di **spostare e copiare le macchine virtuali con la stessa facilità con cui si spostano e copiano file**, indipendentemente dall'hardware sottostante.
+
+Altri concetti chiave: partizionamento, isolamento, indipendenza hardware.
+
+---
+
+**9. Qual è la funzione del middleware in una rete Grid?**
+
+Il **middleware** in una rete Grid è il protocollo/software di rete che **gestisce e coordina le risorse condivise** all'interno dell'organizzazione virtuale. È il vero responsabile della rete Grid, mentre i nodi di controllo sono semplicemente i suoi esecutori.
+
+---
+
+**10. Quali sono i tre nodi che compongono una rete di Grid Computing?**
+
+1. **Nodo di controllo**: server che amministra l'intera rete e tiene conto delle risorse nel pool di rete.
+2. **Provider**: computer che contribuisce con le proprie risorse al pool di risorse in rete.
+3. **Utente**: nodo che utilizza le risorse.
+
+Un computer può assumere sia il ruolo di utente che di provider in base alle esigenze.
+
+---
+
+## Sezione 1.2: Modelli di Riferimento OSI e TCP/IP
+
+**11. Spiega il principio di "incapsulamento" (o incapsulamento) nei modelli a strati. Cosa aggiunge tipicamente ogni livello ai dati ricevuti dal livello superiore?**
+
+L'**incapsulamento** è il meccanismo in cui l'informazione (PDU - Protocol Data Unit) passa da un livello superiore a quello inferiore, e ogni livello aggiunge un insieme di dati chiamato **header** (e a volte una **tail**).
+
+Nel nodo ricevente avviene il processo inverso (**decapsulamento**), con le intestazioni eliminate a ogni livello man mano che l'informazione procede verso il livello applicazione.
+
+---
+
+**12. Quali sono le principali differenze tra un servizio di rete "orientato alla connessione" (connection-oriented) e uno "senza connessione" (connectionless)? A quale sistema della vita reale vengono paragonati?**
+
+| Caratteristica | Connection-oriented | Connectionless |
+|----------------|---------------------|----------------|
+| Analogia | Sistema telefonico | Servizio postale |
+| Fasi | 3 fasi: instaurazione, trasferimento, terminazione | 1 fase: trasferimento dati |
+| Negoziazione | Sì, parametri negoziati | No |
+| Affidabilità | Maggiore | Minore |
+
+---
+
+**13. Descrivi le funzioni principali del Livello Fisico, del Livello Collegamento Dati e del Livello Rete nel modello OSI.**
+
+| Livello | Funzioni principali |
+|---------|---------------------|
+| **Fisico** | Trasmissione di bit grezzi sul canale; sincronizzazione bit; controllo velocità; definizione topologie fisiche; modalità di trasmissione (simplex, half-duplex, full-duplex) |
+| **Collegamento Dati** | Framing; indirizzamento fisico (MAC); controllo errori; controllo di flusso; controllo degli accessi al mezzo (MAC) |
+| **Rete** | Instradamento (routing); indirizzamento logico (IP); consegna da rete a rete |
+
+---
+
+**14. Quanti e quali livelli compongono il modello TCP/IP? A quali livelli OSI corrispondono approssimativamente i livelli "Network Interface" e "Application" del modello TCP/IP?**
+
+Il modello TCP/IP ha **4 livelli**:
+
+| Livello TCP/IP | Livelli OSI corrispondenti |
+|----------------|----------------------------|
+| Applicazione | Applicazione + Presentazione + Sessione |
+| Trasporto | Trasporto |
+| Internet | Rete |
+| Network Interface | Collegamento Dati + Fisico |
+
+Il livello **Network Interface** corrisponde a **Collegamento Dati + Fisico** (livelli 1-2 OSI).  
+Il livello **Application** corrisponde a **Applicazione + Presentazione + Sessione** (livelli 5-7 OSI).
+
+---
+
+**15. Qual è il ruolo del protocollo IP (Internet Protocol) e del protocollo TCP (Transmission Control Protocol) all'interno della suite TCP/IP?**
+
+| Protocollo | Livello | Ruolo |
+|------------|---------|-------|
+| **IP** | Internet | Responsabile della consegna dei pacchetti dall'host sorgente all'host destinatario osservando gli indirizzi IP nelle intestazioni. Versioni: IPv4 e IPv6. |
+| **TCP** | Trasporto | Protocollo orientato alla connessione che fornisce comunicazione affidabile e priva di errori, con segmentazione, riassemblaggio, controllo di flusso e ritrasmissione in caso di errore. |
+
+---
+
+**16. Quali sono le principali differenze tra il modello OSI e quello TCP/IP in termini di numero di livelli e approccio (orizzontale vs. verticale)?**
+
+| Caratteristica | OSI | TCP/IP |
+|----------------|-----|--------|
+| Numero di livelli | 7 | 4 |
+| Tipo | Modello concettuale | Modello pratico, implementato |
+| Approccio | Verticale (dal basso verso l'alto) | Orizzontale (tra livelli pari di nodi diversi), dall'alto verso il basso |
+| Focalizzazione | Standardizzazione di hardware (router, switch, etc.) | Client-server, protocolli |
+| Utilizzo | Quasi mai usato nella pratica | Usato su Internet |
+
+---
+
+## Sezione 1.3: Esempi di Reti e Standardizzazione
+
+**17. Descrivi la topologia a stella (star). Qual è il suo principale punto di vulnerabilità e perché è ancora ampiamente utilizzata?**
+
+Nella **topologia a stella**, ogni dispositivo è connesso a un dispositivo centrale (hub o switch). I dispositivi non comunicano direttamente tra loro, ma tramite il nodo centrale.
+
+**Principale vulnerabilità**: se il nodo centrale si guasta, l'intera rete si interrompe.
+
+**Motivi dell'ampio utilizzo**:
+- Poco costosa (ogni dispositivo necessita solo di una porta I/O)
+- Facile installazione
+- Se un singolo collegamento fallisce, il resto della rete continua a funzionare
+- Facile rilevamento dei guasti
+
+---
+
+**18. Qual è il numero di collegamenti necessari per connettere n dispositivi in una topologia a maglia completa (full mesh)?**
+
+\[
+\frac{n(n-1)}{2}
+\]
+
+*Esempio*: con 4 dispositivi → (4×3)/2 = 6 collegamenti.
+
+---
+
+**19. Distingui le reti broadcast dalle reti point-to-point (unicasting).**
+
+| Caratteristica | Reti broadcast | Reti point-to-point |
+|----------------|----------------|---------------------|
+| Canale | Unico canale condiviso da tutte le macchine | Molte connessioni tra singole coppie di macchine |
+| Comunicazione | Un messaggio viene ricevuto da tutte le macchine; campo indirizzo individua il destinatario | Per andare dalla sorgente alla destinazione, un pacchetto deve visitare una o più macchine intermedie |
+| Termine alternativo | - | Unicasting |
+
+---
+
+**20. Classifica le reti in base all'estensione geografica (PAN, LAN, MAN, WAN), indicando per ciascuna un esempio d'uso tipico.**
+
+| Sigla | Nome | Estensione | Esempio tipico |
+|-------|------|------------|----------------|
+| **PAN** | Personal Area Network | Pochi metri | Computer portatile collegato a stampante e smartphone |
+| **LAN** | Local Area Network | Qualche centinaio di metri | Rete domestica o di piccoli uffici; campus universitario |
+| **MAN** | Metropolitan Area Network | Copertura cittadina | Televisione via cavo americana; dorsale metropolitana in fibra ottica |
+| **WAN** | Wide Area Network | Molti km, macro-regioni o nazioni | Dorsale di Internet; connessione tra sedi distanti di un'azienda |
+
+---
+
+**21. Cos'è una rete a commutazione di pacchetto (packet-switched) e in cosa differisce da una a commutazione di circuito (circuit-switched)?**
+
+| Caratteristica | Commutazione di pacchetto | Commutazione di circuito |
+|----------------|---------------------------|--------------------------|
+| Percorso | Ogni pacchetto può seguire percorsi diversi | Percorso unico e dedicato per tutti i pacchetti del flusso |
+| Risorse | Condivise | Dedicata per tutta la durata della connessione |
+| Esempio | Internet | Rete telefonica tradizionale |
+| Meccanismo | Store-and-forward (i router inoltrano i pacchetti) | Circuito fisico instaurato tra mittente e destinatario |
+
+---
+
+## Sezione 1.3.4: Standard di Rete e Organizzazioni
+
+**22. Qual è la differenza tra uno standard proprietario e uno standard aperto? Perché gli standard aperti hanno avuto più successo nel settore delle reti?**
+
+| Standard proprietario | Standard aperto |
+|----------------------|-----------------|
+| Sviluppato e controllato da una singola azienda | Amministrato da organizzazione senza scopo di lucro o gruppo industriale ampio |
+| Altre aziende sono escluse dal processo di sviluppo | Chiunque può contribuire |
+| Incentiva lo sviluppo di standard concorrenti | Favorisce l'interoperabilità e la collaborazione |
+
+**Perché gli standard aperti hanno più successo**: perché permettono a produttori diversi di realizzare dispositivi e componenti che possono coesistere e funzionare insieme, favorendo la concorrenza, l'innovazione e l'adozione universale (es. Internet non sarebbe possibile senza standard aperti).
+
+---
+
+**23. Quali sono le principali organizzazioni di standardizzazione citate nel testo? Di quale famoso modello è responsabile l'ISO?**
+
+| Organizzazione | Settore/Specialità |
+|----------------|---------------------|
+| **ISO** | Modello OSI (Open System Interconnection) |
+| **ANSI** | Coordinamento standard informatici ed elettronici negli USA |
+| **ETSI** | Standard di telecomunicazione per il mercato europeo |
+| **IEEE** | Progetto IEEE 802 (Ethernet, WiFi, Bluetooth) |
+| **EIA/TIA** | Standard per cablaggio di reti |
+| **ITU-T** | Standard per l'industria delle telecomunicazioni |
+| **IETF** | Sviluppo tecnologie Internet e TCP/IP (RFC) |
+
+L'**ISO** (International Organization for Standardization) è responsabile del **modello di riferimento OSI**.
+
+---
+
+**24. Cosa significa l'acronimo RFC? Descrivi brevemente le fasi che un documento deve attraversare per diventare un "Internet Standard".**
+
+**RFC** = *Request for Comments* (richiesta di commenti). Sono documenti tecnici pubblicati dall'IETF che descrivono protocolli, tecnologie o proposte per Internet.
+
+**Fasi per diventare Internet Standard**:
+
+1. **Sviluppo di base**: specifica senza status formale, solo un'idea.
+2. **Proposed Standard**: specifica stabile, sufficientemente utilizzata, nessun problema riscontrato.
+3. **Draft Standard**: rimane Proposed Standard per almeno 6 mesi ed esistono almeno due implementazioni indipendenti che hanno interagito per provarne le funzionalità.
+4. **Internet Standard**: supera un'ulteriore soglia di 4 mesi con utilizzo considerevole.
+
+Altre categorie RFC: Best Current Practice, Informativo, Sperimentale.
+
+---
+
+**25. Qual è il ruolo dell'ICANN e dell'IANA nella gestione di Internet?**
+
+| Organizzazione | Ruolo |
+|----------------|-------|
+| **IANA** (Internet Assigned Numbers Authority) | Storicamente responsabile dell'assegnazione degli indirizzi IP, della gestione dei nomi di dominio DNS e del registro dei protocolli |
+| **ICANN** (Internet Corporation for Assigned Names and Numbers) | Oggi ha la responsabilità generale; IANA opera sotto la sua egida, ancora responsabile dell'assegnazione degli indirizzi IP e del coordinamento dei parametri |
+
+---
+
+**26. Cosa sono i RIR (Regional Internet Registries)? Fai un esempio di un RIR europeo.**
+
+I **RIR** (Regional Internet Registries) sono organizzazioni responsabili dell'allocazione gerarchica degli indirizzi IP e di altre risorse Internet (es. numeri AS) per specifiche regioni geografiche. IANA assegna blocchi di indirizzi ai RIR, che poi li suddividono tra ISP, organizzazioni o altri registri (NIR, LIR).
+
+**Esempio di RIR europeo**: **RIPE NCC** (Réseaux IP Européens Network Coordination Centre) - copre Europa, Medio Oriente e Asia Centrale.
+
+Altri RIR:
+- AfriNIC (Africa)
+- APNIC (Asia e Oceano Pacifico)
+- ARIN (Nord America)
+- LACNIC (America Latina e Caraibi)
