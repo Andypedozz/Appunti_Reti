@@ -1,7 +1,3 @@
-Certamente. Ecco le risposte alle domande sul capitolo 3 ("Livello Collegamento"), riprese una per una e sviluppate in modo meno sintetico, basandosi esclusivamente sul contenuto del PDF.
-
----
-
 ### Sezione 3.1 – Data Link Control
 
 1. **Quali sono i cinque servizi principali offerti dal livello collegamento?**
