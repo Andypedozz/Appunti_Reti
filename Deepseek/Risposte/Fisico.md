@@ -370,12 +370,12 @@ Per questo motivo, le reti wireless richiedono protocolli di crittografia e aute
 
 | Aspetto | Fibra ottica | Satelliti |
 |---------|-------------|-----------|
-| **Larghezza di banda** | 💪 Molto alta (vantaggio per link punto-punto) | Limitata, condivisa tra molti utenti |
-| **Latenza** | 💪 Bassa | Alta (GEO: ~250 ms RTT; LEO: migliore ma comunque > fibra) |
-| **Copertura geografica** | Limitata a dove è stata posata | 💪 Globale, anche aree remote (montagne, oceani, deserti, polo) |
-| **Broadcast/multicast** | Inefficiente (consuma molta banda) | 💪 Naturale: un segnale può raggiungere milioni di ricevitori |
-| **Installazione** | Costosa e lenta (scavo, posa) | 💪 Rapida (basta installare una parabola) |
-| **Affidabilità fisica** | Vulnerabile a scavi, terremoti, incidenti | 💪 Immune a problemi del terreno |
+| **Larghezza di banda** |  Molto alta (vantaggio per link punto-punto) | Limitata, condivisa tra molti utenti |
+| **Latenza** |  Bassa | Alta (GEO: ~250 ms RTT; LEO: migliore ma comunque > fibra) |
+| **Copertura geografica** | Limitata a dove è stata posata |  Globale, anche aree remote (montagne, oceani, deserti, polo) |
+| **Broadcast/multicast** | Inefficiente (consuma molta banda) |  Naturale: un segnale può raggiungere milioni di ricevitori |
+| **Installazione** | Costosa e lenta (scavo, posa) |  Rapida (basta installare una parabola) |
+| **Affidabilità fisica** | Vulnerabile a scavi, terremoti, incidenti |  Immune a problemi del terreno |
 
 **Complementarietà**: fibra e satellite sono spesso usati insieme. Esempio: un provider può usare fibra per backbone urbano e satellite per raggiungere utenti in zone rurali/montane dove la fibra non arriva o avrebbe costi proibitivi a causa dell'orografia del terreno.
 
