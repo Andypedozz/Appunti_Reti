@@ -1,7 +1,3 @@
-Ecco le **risposte complete e dettagliate** a tutte le domande del capitolo "Livello Rete" (Capitolo 5), con spiegazioni approfondite basate esclusivamente sul contenuto del PDF.
-
----
-
 # Livello Rete – Risposte Dettagliate
 
 ## Sezione 5.1 – Problemi Architetturali dello Stato Rete
