@@ -1,45 +1,167 @@
 # Tecnologie di Accesso
 
-## Local Loop e vecchie tecnologie
-La rete telefonica pubblica commutata, o PSTN, è l'insieme mondiale di reti telefoniche pubblico tra loro connesse e principalmente per veicolare dati voce.
-Negli ultimi anno la situazione sta cambiando con l'introduzione delle fibre ottiche e del digitale.
+## Evoluzione della rete telefonica
 
-Il sistema telefonico è costituito da tre componenti principali:
-* Local Loop (ultimo miglio): formato da doppini intrecciati, e quindi analogici, e alcuni tratti in fibra ottica FTTH.
-* Trunks o Backbone: ormai quasi interamente in fibra o microonde, trasmesse per lo più in digitale.
-* Centrali di smistamento: ormai formatesi in armadi e box di distribuzione.
+La rete telefonica pubblica PSTN nasce come rete destinata principalmente al trasporto della voce. In origine le connessioni erano manuali: gli operatori collegavano fisicamente le chiamate tramite cavi jumper. Col tempo la rete si è evoluta fino a creare una struttura gerarchica di centrali di commutazione.
 
-Nel loro insieme le reti costituiscono la rete di accesso, e sono il mezzo di collegamento tra gli utenti e le centrali telefoniche o nodi di fornitura a banda larga.
+La rete telefonica tradizionale è composta da tre parti principali:
 
-Il cavo telefonico della rete di accesso Secondaria parte dal Box dell'edificio fino al box stradale, da cui tramite la rete di accesso primaria arriva al giunto di sfioccamento, e da qui si arriva alla centrale telefonica.
+* **Local Loop (ultimo miglio)**: collegamento tra utente e centrale, storicamente realizzato con doppini in rame;
+* **Backbone o dorsale**: rete principale di trasporto, oggi quasi totalmente in fibra ottica;
+* **Centrali di smistamento**: strutture che gestiscono e instradano il traffico.
 
-La Metro Access Network è una rete su standard Ethernet. Viene comunemente usata per connettere gli abbonati a una rete di servizi più ampia, come Internet, e la loro velocità varia in base alla tecnologia usata:
-* Rame: quella che ha servito l'Italia fino a qualche anno fa
-* Fibra: naturale evoluzione della precedente a causa della crescente richiesta di servizi ad alte prestazioni. Questa si divide in due architetture:
-    * TDM-PON: l'implementazione di questa architettura si basa sulla divisione del periodo di trasmissione per ciascun utente su una singola lunghezza d'onda.
-    * WDM-PON: l'implementeazione di questa architettura si basa sulla divisione del mezzo trasmissimo dedicando agli utenti diverse lunghezze d'onda.
+La rete di accesso collega fisicamente l’utente alla rete dell’operatore. Dall’impianto interno dell’edificio il collegamento arriva ai box stradali, poi alla rete primaria e infine alla centrale telefonica.
 
-## xDSL
-Il primo elemento che si interfaccia con la rete di accesso e si trova presso la casa del cliente è il CPE (Customer Premise Equipment): per CPE si intende qualsiasi dispositivo presso l'utente, che viene usato in sostituzione a un provider di servizi.
+---
 
-Un modem è un dispositivo, disponibile come case indipendente o come una scheda da inserire in un computer, che permette ai dati digitali di essere ricevuti e inviati su un canale analogico, grazie alla modulazione, ossia la codifica di dati digitali in analogico, che generalmente è una frequenza portante modulata. L'operazione inversa è la demodulazione. Esistono vari tipi di modulazione utilizzati:
-* modulazione in ampiezza (AM)
-* modulazione di frequenza (FSK, Frequency Shift Keying)
-* modulazione di fase (PSK, Phase Shift Keying)
-* modulazione combinata di ampiezza e fase (QAM, Quadrature Amplitude Modulation).
+## Metro Access Network e reti in fibra
 
-Alcuni termini inerenti alla trasmissione sono bps, baud e banda passante. Baud e Bps (bit al secondo) non sono la stessa cosa.
+La Metro Access Network è una rete Ethernet utilizzata per collegare gli utenti ai servizi Internet con velocità che possono arrivare fino a 1 Gbps.
 
-Bit al secondo è la misura di quanti bit di dati vengono trasmessi ogni secondo sul canale. Il Baud invece, quando il segnale usa solo due segnali, il numero di simboli trasmessi per unità di tempo: ad esempio un modem che trasmette in 4-QAM ha una velictà di 1200 Baud, ma di 2400 bps (perchè trasmette 2 bit per simbolo).
+Le infrastrutture possono essere:
 
-I primi modem usavano un range di frequenze in cui passava il segnale detta fonica (da 300Hz a 3400Hz) per trasmettere i dati. Tale banda consentiva un passaggio di 1200 baud. Poi si è aumentati a 2400, 4800, 9600, fino a 56 Kbps con lo standard V90, anche se i baud sono sempre 1200: in altre parole si è incrementato il numero di bit trasportati da un baud fino a 46,6 bit per baud.
+* **Basate su rame**, tecnologia storicamente molto diffusa ma ormai in progressiva sostituzione;
+* **Basate su fibra ottica**, necessarie per supportare servizi moderni come streaming, gaming e cloud.
 
-Lo standard V dei modem è iniziato con la trasmissione in modulazione QAM (o CAP sulla linea telefonica). Ogni tipo di modulazione QAM è caratterizzato da un diagramma sul piano complesso (costellazione) su cui sono rappresentate i possibili stati della portante.
+Nelle reti in fibra vengono utilizzate principalmente due tecniche:
 
-La modulazione DMT, consiste nel dividere la banda disponibile in un alto numero di sottocanali di pari dimensione. Ad esempio, nella prima versione di ADSL la banda era 1104KHz divisa in 256 sottocanali di banda 4,3125KHz. I primi 6 sottocanali erano impiegati per la fonia. In realtà l'ampiezza effettiva di ogni sottocanale è di 4KHz, mentre l'eccedente viene usato come banda di guardia per evitare che i sottocanali si sovrappongono.
+### TDM-PON
 
-L'allocazione dei sottocanali avviene con la tecnica FDM. Si destinano 32 sottocanali per l'upload (dall'utente all'ISP) e 218 per il download dall'ISP all utente. I 32 per l'upload sono allocati dalla frequenza 25,875KHz fino a 163,875KHz. Il modem è realizzato in modo da trasmettere, per ogni sottocanale, da 2 a 15 bit al periodo in funzione del rapporto S/N.
+La banda viene condivisa nel tempo: ogni utente utilizza l’intera capacità della rete durante un preciso intervallo temporale chiamato *time slot*.
 
-## Fibra Ottica
+### WDM-PON
 
-## Fixed Wireless Access and Satellite
+Ogni utente riceve una diversa lunghezza d’onda ottica. In questo modo è possibile aumentare molto la capacità trasmissiva, raggiungendo velocità dell’ordine dei 10 Gbps.
+
+---
+
+## xDSL e modem
+
+All’interno dell’abitazione dell’utente si trova il **CPE (Customer Premises Equipment)**, cioè il dispositivo utilizzato per accedere alla rete, come modem o router.
+
+Il modem consente di trasmettere dati digitali su un canale analogico tramite operazioni di:
+
+* **modulazione**: conversione del segnale digitale in analogico;
+* **demodulazione**: operazione inversa.
+
+Le principali tecniche di modulazione sono:
+
+* AM (modulazione di ampiezza),
+* FSK (modulazione di frequenza),
+* PSK (modulazione di fase),
+* QAM (modulazione combinata ampiezza/fase).
+
+È importante distinguere tra:
+
+* **bps**: bit trasmessi al secondo;
+* **baud**: simboli trasmessi al secondo.
+
+Con l’evoluzione dei modem è stato possibile aumentare il numero di bit trasmessi per simbolo, raggiungendo velocità molto superiori pur mantenendo la stessa frequenza di simboli.
+
+---
+
+## Tecnologia ADSL e VDSL
+
+Le tecnologie xDSL sfruttano il doppino telefonico in rame per trasmettere dati ad alta velocità.
+
+La tecnologia ADSL utilizza la modulazione DMT, che divide la banda disponibile in numerosi sottocanali indipendenti. Alcuni canali vengono utilizzati per la voce, altri per upload e download.
+
+L’evoluzione delle tecnologie DSL è avvenuta in più fasi:
+
+### ADSL2
+
+Migliora la modulazione e sfrutta meglio le frequenze disponibili, aumentando le prestazioni.
+
+### ADSL2+
+
+Raddoppia la banda disponibile per il download, arrivando fino a 2,2 MHz.
+
+### VDSL
+
+Introduce la fibra ottica fino all’armadio stradale, mantenendo il rame solo nell’ultimo tratto verso l’abitazione.
+
+### VDSL2
+
+Utilizza frequenze più elevate e permette velocità molto maggiori, mantenendo compatibilità con ADSL2+.
+
+### Enhanced VDSL2
+
+Estende ulteriormente lo spettro fino a 35 MHz per incrementare ancora le velocità sulle reti FTTC.
+
+---
+
+## Reti ottiche e architetture FTTx
+
+Le reti NGAN (Next Generation Access Network) e FTTx rappresentano l’evoluzione moderna delle reti di accesso basate su fibra ottica.
+
+Una rete ottica OTN (Optical Transport Network) permette di trasportare segnali ad altissima velocità attraverso contenitori ottici chiamati ODU:
+
+* ODU1 fino a 2,5 Gbit/s,
+* ODU2 fino a 10 Gbit/s,
+* ODU3 fino a 40 Gbit/s.
+
+---
+
+## Reti PON
+
+Le reti PON (Passive Optical Network) sono reti punto-multipunto caratterizzate dall’assenza di apparati attivi lungo la distribuzione ottica.
+
+I principali elementi sono:
+
+* **OLT (Optical Line Termination)**: apparato presente nella centrale;
+* **ONT/ONU**: terminale ottico presso l’utente;
+* **ODN**: rete di distribuzione ottica passiva.
+
+Le reti PON offrono diversi vantaggi:
+
+* maggiore affidabilità;
+* manutenzione ridotta;
+* minori costi;
+* facilità di evoluzione tecnologica.
+
+Questa architettura può essere utilizzata in:
+
+* **FTTH**: fibra fino all’abitazione;
+* **FTTB**: fibra fino all’edificio;
+* **FTTC**: fibra fino all’armadio stradale.
+
+Nelle soluzioni FTTB e FTTC l’ultimo tratto può ancora utilizzare il rame tramite VDSL.
+
+---
+
+## Fixed Wireless Access (FWA)
+
+Le tecnologie FWA permettono di fornire connettività tramite collegamenti radio anziché cavi fisici.
+
+In molti casi la fibra arriva fino a una torre radio (*Fiber To The Tower*), mentre l’ultimo collegamento verso l’utente avviene tramite onde radio.
+
+Il sistema è composto da:
+
+* una stazione base collegata alla dorsale;
+* antenne e CPE installati presso gli utenti.
+
+### Vantaggi
+
+* copertura delle aree poco servite;
+* installazione semplice;
+* assenza di scavi e cablaggi complessi.
+
+### Svantaggi
+
+* distanza limitata;
+* necessità di visibilità verso la stazione radio;
+* sensibilità agli ostacoli ambientali;
+* riduzione della portata alle alte frequenze.
+
+---
+
+## Evoluzione del wireless: HiperLAN, WiMAX e 5G
+
+Le prime soluzioni FWA utilizzavano HiperLAN2, tecnologia semplice ma poco efficiente quando il numero di utenti aumentava.
+
+Successivamente è arrivato il WiMAX, capace di offrire coperture più ampie e velocità elevate. Funzionava sia in modalità:
+
+* **Non Line of Sight**, senza visibilità diretta;
+* **Line of Sight**, con collegamento diretto verso la BTS.
+
+Oggi il futuro del FWA è fortemente legato al **5G**, che permette velocità molto elevate e prestazioni comparabili a quelle delle reti FTTC in fibra.
