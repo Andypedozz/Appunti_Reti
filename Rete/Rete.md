@@ -102,3 +102,40 @@ I range di IP privati sono:
 * IP privato di classe C: 192.168.0.0 - 192.168.255.255
 
 ## Protocollo IPv6 e Indirizzamento
+IPv6 è nato negli anni '90 a causa dell'esaurimento degli IPv4. E' un protocollo molto diverso da IPv4 e la sua crescita è stata molto lenta.
+Esso usa indirizzi a 128 bit, costituendo uno spazio di indirizzamento molto più grande: $2^{128}$.
+
+La lunghezza degli indirizzi ha portato anche alla loro scrittura in esadecimale, per un totale di 32 caratteri raggruppati in 8 parole da 4 caratteri ciascuno, separate da 2 punti.
+
+Gli indirizzi IPv6 sono molto lunghi, ma sono riducibili, rimuovendo i leading zeros o comprimendo le parti composte da soli zeri (non più di una volta nello stesso indirizzo).
+Ad esempio:
+
+<p style="text-align: center;">
+    2001:0db8:85a3:<span style="font-weight: bold;">0000:0000</span>:8a2e:0370:7334
+</p>
+
+Può essere scritto:
+
+<p style="text-align: center;">
+    2001:0db8:85a3::8a2e:0370:7334
+</p>
+
+Non è un caso che ci siano tanti zeri, in quanto **la seconda parte di un indirizzo IPv6 identifica sempre l'host**, detta **Interface ID**. Esso è sempre lungo 64 bit. Guardiamo il formato generico dell'intero indirizzo IPv6:
+* i primi 64 bit indicano la **Network ID**, e sono ulteriormente divisi in
+    * 48 bit di **Prefix** assegnato dall'ISP
+    * 16 bit di **Subnet ID**
+* i restanti 64 indicano l'**Interface ID**
+
+La IANA ha allocato 1/8 dello spazio di indirizzamento unicast IPv6, ossia quello che inizia per "001" (primo byte=001xxxxx, cioe gli IPv6 = 2xxx::/3), quando finiranno si passerà a 3xxx::/3.
+
+Come in IPv4 si usa la notazione CIDR, e una singola interfaccia si indica con /128.
+Vediamo alcuni IPv6 speciali:
+* Unspecified: ::/128
+* Loopback: ::1/128
+
+Altri indirizzi speciali sono:
+* indirizzi riservati, pari a 1/256 dello spazio e hanno il primo byte = 0; usati da IETF e per IPv4 address embedding
+* indirizzi locali (come i privati in IPv4) che sono usati solo in LAN e non sono instradati su Internet.
+Iniziano con i seguenti 9 bit: 1111 1110 1 **(da FE8x::/9 e FEFx::/9)**. Si dicono anche "**unregistered**" o "**nonroutable**". Questi si dividono poi in:
+* Link-local Addresses: sempre bloccati dai router, e quindi locali a ogni switched LAN o subnet **(FE8x, FE9x, FEAx, FEBx)**.
+* Site-Local Addresses: instradati dai router di una organizzazione solo nella rete privata (Site), quindi tra subnet ma non verso internet **(FECx, FEDx, FEEx, FEFx)**.
