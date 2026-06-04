@@ -97,7 +97,54 @@ La prima stabilisce che se un nodo A sta instradando pacchetti per una destinazi
 Split Horizon con Poison Reverse aggiunge il fatto che le distanze che sono instradate attraverso il link caduto saranno impostate a Infinito.
 
 ## Link State
+La seconda tipologia di algoritmi di routing sono quelle dello stato dei link. Questi algoritmi scambiano messaggi sullo stato dei link e consentono a ogni router di capire la topologia complessiva della rete, e successivamente ogni router calcola la propria tabella di instradamento tramite l'algoritmo del percorso più breve.
 
+Il principio è semplice: non calcolano in modo distribuito i percorsi, bensì, ogni nodo mantiene una mappa della rete, scambiando con ogni altro nodo i dati sui suoi vicini, e calcola i percorsi migliori autonomamente.
+
+Concetti chiave:
+* Conoscenza dei vicini: invece di inviare la propia tabella di routing, un router invia solo info sui suoi vicini. Ciascun router invia a TUTTI i nodi della rete la sua identità e i pesi dei link che lo collegano ai suoi vicini.
+* Flooding: ogni router invia i propri dati a tutti i router della rete tranne a quelli a esso direttamente connessi. Ogni router che li riceve li inoltra ai suoi vicini, così che tutti i router  hanno le stesse informazioni.
+* Condivisione delle informazioni: un router invia informazioni a tutti gli altri solo quando cambia lo stato dei link.
+
+Quindi in sostanza, si mantiene una copia sincronizzata della tabella sullo stato dei link in ogni nodo.
+
+L'algoritmo si compone di 4 fasi:
+* Inizializzazione: ogni router si informa sui link immediati e inserisce i dati nella tabella
+* Costruzione e distribuzione dei pacchetti: ogni router crea un pacchetto contenente la lista dei suoi vicini e relativi costi di link. Nell'intestazione ogni router aggiunge la propria identità più un numero di sequenza e un valore di durata (age). Quest ultimo serve per evitare che i pacchetti non vaghino nella rete indefinitamente.
+* Calcolo del percorso minimo: ogni router usa le info appena ricevute per creare un "sink tree" e trovare il percorso minimo verso ogni nodo, tipicamente tramite Dijkstra.
+* Consolidamento delle route: i percorsi calcolati formano la tabella che poi verrà salvata nel dispositivo, che sarà costituiti dai percorsi ottimi per ogni nodo.
+
+### Struttura Tabella
+
+```js
+const tableA = {
+    A: 0,
+    B: 1,
+}
+
+const tableB = {
+    A: 1,
+    B: 0,
+    C: 1,
+}
+
+const tableA = {
+    B: 1,
+    C: 0,
+}
+
+
+```
+
+### Vantaggi e Svantaggi
+Vantaggi:
+* Convergenza abbastanza veloce in quanto ogni nodo deve sapere solo lo stato dei link adiacenti
+* Non soffre della divergenza, anche questo grazie al focus solo sui vicini.
+Svantaggi:
+* Difficile da implementare in reti vaste e non scala come distance vector.
+* Richiede più risorse per gestire le tabelle della intera rete e ricalcolare i percorsi a ogni cambio di link.
+
+## OSPF
 
 ## Congestione
 La congestione della rete è il fenomeno in cui i nodi immettono nella rete più pacchetti di quanti essa ne riesca a consegnare a destinazione; oltre che per quantità di pacchetti, essa può avere altre cause come:

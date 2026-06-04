@@ -89,6 +89,8 @@ Questo permette:
 * violazione della privacy
 * escalation dei privilegi
 
+<div style="page-break-after: always;"></div>
+
 ## Fix
 
 È necessario verificare che l’utente autenticato possa realmente accedere alla risorsa richiesta.
@@ -159,6 +161,8 @@ Questo aumenta enormemente il rischio di:
 * CSRF
 * utilizzo illecito delle API
 
+<div style="page-break-after: always;"></div>
+
 ## Fix
 
 ```js
@@ -207,6 +211,8 @@ Pacchetti malevoli possono:
 ```
 
 Versioni obsolete possono contenere CVE pubbliche già note.
+
+<div style="page-break-after: always;"></div>
 
 ## Fix
 
@@ -257,6 +263,8 @@ app.post('/register', async (req, res) => {
 
 Se il database viene compromesso, tutte le password risultano immediatamente leggibili.
 
+<div style="page-break-after: always;"></div>
+
 ## Fix con bcrypt
 
 ```js
@@ -281,7 +289,7 @@ Le password devono sempre essere:
 * salate
 * mai salvate in chiaro
 
----
+<div style="page-break-after: always;"></div>
 
 ## JWT Secret Hardcoded
 
@@ -350,6 +358,9 @@ WHERE username='' OR '1'='1'
 
 L’attaccante può bypassare l’autenticazione.
 
+<div style="page-break-after: always;"></div>
+
+
 ## Fix con query parametrizzate
 
 ```js
@@ -396,6 +407,8 @@ L’attaccante può:
 * rubare JWT
 * modificare il DOM
 * effettuare azioni a nome dell’utente
+
+<div style="page-break-after: always;"></div>
 
 ## Fix
 
@@ -453,6 +466,8 @@ document.forms[0].submit();
 ## Problema
 
 Il browser invia automaticamente i cookie di sessione.
+
+<div style="page-break-after: always;"></div>
 
 ## Fix con CSRF Token
 
@@ -697,6 +712,7 @@ Esempio:
 ```http
 ?payload={
 ```
+<div style="page-break-after: always;"></div>
 
 ## Fix
 
