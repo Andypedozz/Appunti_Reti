@@ -319,6 +319,43 @@ Nelle reti molto grandi, OSPF può essere suddiviso in **aree**, che riducono il
 Questa organizzazione migliora la scalabilità e limita la diffusione degli aggiornamenti di routing.
 
 ## Congestione
+La congestione è il fenomeno che si verifica quando i nodi mittenti inviano più pacchetti di quanti la rete riesca a consegnare a destinazione. Ci sono altre cause della congestione oltre al numero di pacchetti:
+* diversi flussi usano la stessa linea e i pacchetti in arrivo a un router non vengono processati, formando una coda
+* esaurimento dei buffer dei router porta allo scarto dei pacchetti successivi
+* lentezza della CPU dei router può portare a rallentamenti delle risposte e esaurimento di memoria
 
+La congestione è rilevabile tramite il ritardo e il throughput, e se non viene gestita essa peggiora nel tempo.
 
+Il ritardo di una rete è minimo e normalmente, è dovuto solo al ritardo di propagazione e al tempo di elaborazione dei router; ma se il traffico aumento, anche il ritardo cresce, innescando inoltre la rispedizione dei pacchetti scartati.
+
+A carico normale, il throughput cresce proporzionalmente al traffico; mentre se il traffico supera una percentuale alta della capacità del canale (85-90%), il throughput diminuisce all'aumentare del traffico.
+
+Ci sono varie tecniche per mitigare la congestione, sia al livello rete che al livello trasporto. Al livello rete esistono:
+* Controllo Proattivo (a ciclo aperto)
+* Controllo Reattivo (a ciclo chiuso)
+
+### Controllo Proattivo
+Cerca di prevenire la congestione, e viene fatto dalla sorgente o dalla destinazione.
+
+* Tecnich di ritrasmissione: se il mittente ritiene che un pacchetto inviato sia andato perso o danneggiato, viene ritrasmesso, ma va fatto con cautela in quanto può aumentare la congestione. Perciò si usano timer progettati con cura.
+* Gestione della finestra scorrevole
+* Politiche di eliminazione dei pacchetti: a volte i router sono costretti a eliminare preventivamente dei pacchetti per evitare la congestione (ad esempio pacchetti audio vengono ricostruiti tramite interpolazione dal destinatario).
+* Politiche di accesso
+
+### Controllo Reattivo
+
+* Segnalazione al mittente
+* Pressione all'indietro
+* Segnalazione esplicita
+
+## Leacky Bucket / Token Bucket
+Due modi per modellare il traffico e ridurre la congestione sono gli algoritmi leacky bucket e token bucket.
+
+Leacky Bucket consente di controllare quantità del traffico e velocità di trasmissione, rilevando picchi repentini di errori nel buffer. Esso funzione come un secchio bucato che trattiene acqua: l'acqua rappresenta i pacchetti che entrano dall'alto nel secchio e fuoriescono dal buco in fondo. Se il flusso dati è troppo alto il seccio si riempirebbe e sgorgherebbe dall'alto, e i pacchetti verrebbero scartati. Vengono ammessi pacchetti nel secchio solo quando torna ad avere spazio svuotandosi dal buco.
+
+Il buco è come un settaggio di un data rate della rete. Si può implementare con un buffer gestito in modalità FIFO: la coda trattiene i pacchetti e non consente loro di passare se superano la banda settata in uscita. Tuttavia se il traffico continua ad arrivare e il buffer è pieno, l'algoritmo scarta i pacchetti appena ricevuti, indipendentemente dall'importanza del pacchetto o del flusso a cui appartiene.
+
+## Load Shedding
+
+### Random Early Detection
 
