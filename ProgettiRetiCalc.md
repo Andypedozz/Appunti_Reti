@@ -1,20 +1,52 @@
-# Università degli Studi di Urbino Carlo Bo
-
-## Informatica Scienza e Tecnologia
-
-### Anno Accademico 2025/2026
-
----
-
-# Progetto d’esame di Reti di Calcolatori
-
-## Analisi delle vulnerabilità di un sito o applicazione web realizzata con React + ExpressJS
-
----
-
-### Andrea Pedini
-
-### Matricola n. 322918
+<div style="text-align: center; font-weight: bold; font-size: x-large;">
+    Università degli Studi di Urbino Carlo Bo
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    Informatica Scienza e Tecnologia
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    Anno Accademico 2025/2026
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    Progetto d’esame di Reti di Calcolatori
+    Analisi delle vulnerabilità di un sito o applicazione web realizzata con React + ExpressJS
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    Andrea Pedini
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    Matricola n. 322918
+</div>
 
 
 <div style="page-break-after: always;"></div>
@@ -35,16 +67,16 @@ OWASP Top 10 è un documento standard di consapevolezza per sviluppatori e sicur
 
 Secondo OWASP, le principali aree di vulnerabilità e tipologie di attacchi a cui sono suscettibili gli applicativi web, facendo riferimento a OWASP Top 10:2025, sono:
 
-* A01:2025 - Broken Access Control
-* A02:2025 - Security Misconfiguration
-* A03:2025 - Software Supply Chain Failures
-* A04:2025 - Cryptographic Failures
-* A05:2025 - Injection
-* A06:2025 - Insecure Design
-* A07:2025 - Authentication Failures
-* A08:2025 - Software or Data Integrity Failures
-* A09:2025 - Security Logging & Alerting Failures
-* A10:2025 - Mishandling of Exceptional Condition
+* A01 - Broken Access Control
+* A02 - Security Misconfiguration
+* A03 - Software Supply Chain Failures
+* A04 - Cryptographic Failures
+* A05 - Injection
+* A06 - Insecure Design
+* A07 - Authentication Failures
+* A08 - Software or Data Integrity Failures
+* A09 - Security Logging & Alerting Failures
+* A10 - Mishandling of Exceptional Condition
 
 Andiamo ora ad analizzare ognuna di queste vulnerabilità singolarmente e in modo dettagliato.
 

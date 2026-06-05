@@ -259,10 +259,64 @@ La caduta di un link può causare problemi come:
 Ciò si chiama Count to Infinity, risolvibile solo tramite una convenzione rappresentativa del valore infinito con una distanza settata a un valore > del diametro della rete.
 
 Per risolvere questi problemi esistono tecniche come:
-* **Split Horizon**:
-* **Split Horizon con Poison Reverse**:
+* **Split Horizon**: se un nodo A sta instradando pacchetti verso Z attraverso B, non è logico che B tenti di raggiungere Z tramite A, perciò non c'è motivo per cui A debba dire a B che Z ha distanza più breve da A.
+
+* **Split Horizon con Poison Reverse**: questa è più aggressiva; il distance vector dei nodi continua a includere tutte le destinazioni raggiungibili, ma essi impostano a INF le distanze instradate tramite il link caduto.
 
 ### Link State
+
+Gli algoritmi di **Link State** permettono a ogni router di conoscere l'intera topologia della rete. Invece di scambiarsi le tabelle di routing complete, i router condividono solo informazioni sui collegamenti diretti con i propri vicini. Grazie a queste informazioni, ogni router costruisce una mappa completa della rete e calcola autonomamente i percorsi migliori utilizzando l'algoritmo del percorso minimo (tipicamente **Dijkstra**).
+
+#### Concetti fondamentali
+
+* **Conoscenza dei vicini:** ogni router comunica la lista dei propri vicini e il costo dei collegamenti.
+* **Flooding:** le informazioni vengono propagate a tutta la rete tramite inoltro da router a router.
+* **Aggiornamenti su cambiamento:** i router inviano nuove informazioni solo quando cambia lo stato di un collegamento.
+
+Per garantire instradamenti corretti, tutti i router devono mantenere una copia sincronizzata delle informazioni sulla topologia, anche se durante guasti o cambiamenti possono verificarsi temporanee differenze di aggiornamento.
+
+#### Fasi del funzionamento
+
+1. **Inizializzazione:** ogni router rileva i propri collegamenti diretti.
+2. **Creazione e distribuzione dei pacchetti:** vengono generati pacchetti con informazioni sui vicini, identificativo, numero di sequenza e tempo di validità, poi diffusi tramite flooding.
+3. **Calcolo dei percorsi minimi:** ogni router applica l'algoritmo di Dijkstra per trovare il percorso ottimale verso tutte le destinazioni.
+4. **Costruzione della tabella di routing:** i percorsi migliori vengono salvati nella tabella di instradamento.
+
+#### Vantaggi
+
+* Convergenza rapida dopo modifiche della rete.
+* Assenza dei problemi di divergenza tipici degli algoritmi Distance Vector.
+
+#### Svantaggi
+
+* Minore scalabilità nelle reti molto grandi.
+* Maggiore consumo di memoria e CPU, poiché ogni router deve memorizzare la topologia completa e ricalcolare i percorsi.
+
+### OSPF (Open Shortest Path First)
+
+OSPF è il più importante protocollo Link State. Le sue versioni principali sono:
+
+* **OSPFv1** (1989, oggi obsoleta).
+* **OSPFv2** (1998, per IPv4).
+* **OSPFv3** (2008, supporta IPv6 mantenendo compatibilità con IPv4).
+
+OSPF utilizza messaggi chiamati **LSA (Link State Advertisement)** per descrivere lo stato dei collegamenti. I router raccolgono queste informazioni in un **LSDB (Link State Database)** e le diffondono fino a ottenere una visione identica della rete.
+
+#### Funzionamento di OSPF
+
+1. Stabilisce relazioni con i router vicini.
+2. Scambia i pacchetti LSA.
+3. Ogni router calcola autonomamente i percorsi migliori con l'algoritmo di Dijkstra e aggiorna la propria tabella di routing.
+
+#### Aree OSPF
+
+Nelle reti molto grandi, OSPF può essere suddiviso in **aree**, che riducono il volume di informazioni gestite dai router. Le regole principali sono:
+
+* Deve esistere un'**area backbone (Area 0)**.
+* Ogni area non-backbone deve essere collegata direttamente alla backbone.
+* La backbone deve rimanere sempre connessa e non frammentata.
+
+Questa organizzazione migliora la scalabilità e limita la diffusione degli aggiornamenti di routing.
 
 ## Congestione
 
