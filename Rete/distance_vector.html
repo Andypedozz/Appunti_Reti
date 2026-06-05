@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distance Vector Routing — Simulator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #080c10;
+    --panel: #0d1117;
+    --panel2: #111820;
+    --border: #1e3a4a;
+    --accent: #00ffe7;
+    --accent2: #ff6b35;
+    --accent3: #a259ff;
+    --green: #39ff14;
+    --yellow: #ffe600;
+    --red: #ff2d55;
+    --text: #c8dce8;
+    --text-dim: #4a6878;
+    --node-r: 28;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,231,0.015) 2px, rgba(0,255,231,0.015) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  header {
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 20px;
+    background: linear-gradient(90deg, #0d1117 60%, rgba(0,255,231,0.04));
+  }
+  header h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem; font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(0,255,231,0.6);
+  }
+  header .sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    grid-template-rows: auto 1fr;
+    height: calc(100vh - 61px);
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    grid-row: 1 / 3;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 3px; color: var(--accent);
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    background: rgba(0,255,231,0.04);
+    text-transform: uppercase;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .toolbar-row { display: flex; gap: 6px; }
+
+  .btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 1px;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    background: var(--panel2);
+    color: var(--text);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+    flex: 1;
+    text-align: center;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,255,231,0.07); }
+  .btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,255,231,0.12); box-shadow: 0 0 10px rgba(0,255,231,0.2); }
+  .btn.danger { border-color: var(--red); color: var(--red); }
+  .btn.danger:hover { background: rgba(255,45,85,0.1); }
+  .btn.run { border-color: var(--green); color: var(--green); font-weight: bold; }
+  .btn.run:hover { background: rgba(57,255,20,0.1); box-shadow: 0 0 12px rgba(57,255,20,0.3); }
+  .btn.run:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn.warn { border-color: var(--yellow); color: var(--yellow); }
+  .btn.warn:hover { background: rgba(255,230,0,0.1); }
+  .btn-full { width: 100%; }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 2px; padding: 4px 0 2px;
+    text-transform: uppercase;
+  }
+
+  /* Edge form */
+  .edge-form {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .edge-form input, .edge-form select {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 2px;
+    width: 100%;
+  }
+  .edge-form input:focus, .edge-form select:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .edge-form-row { display: flex; gap: 6px; }
+  .edge-form-row input { flex: 1; }
+  .badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem; padding: 2px 7px;
+    border-radius: 10px; display: inline-block;
+  }
+  .badge-add { background: rgba(57,255,20,0.15); color: var(--green); border: 1px solid rgba(57,255,20,0.3); }
+  .badge-del { background: rgba(255,45,85,0.15); color: var(--red); border: 1px solid rgba(255,45,85,0.3); }
+
+  /* Step controls */
+  .step-controls {
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 7px;
+    border-bottom: 1px solid var(--border);
+  }
+  .step-info {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; color: var(--yellow);
+    text-align: center; min-height: 16px;
+  }
+  .progress-bar {
+    height: 3px; background: var(--panel2); border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent);
+    transition: width 0.3s;
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* Speed slider */
+  .speed-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .speed-row label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem; color: var(--text-dim); white-space: nowrap;
+  }
+  input[type=range] {
+    flex: 1; accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  /* Log */
+  .log {
+    flex: 1; overflow-y: auto;
+    padding: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.66rem;
+    line-height: 1.6;
+  }
+  .log::-webkit-scrollbar { width: 4px; }
+  .log::-webkit-scrollbar-track { background: var(--panel); }
+  .log::-webkit-scrollbar-thumb { background: var(--border); }
+  .log-entry { padding: 2px 0; border-bottom: 1px solid rgba(30,58,74,0.4); }
+  .log-entry.update { color: var(--accent); }
+  .log-entry.bounce { color: var(--red); }
+  .log-entry.converge { color: var(--green); }
+  .log-entry.info { color: var(--text-dim); }
+  .log-entry.round { color: var(--yellow); font-weight: bold; border-bottom: 1px solid var(--yellow); margin: 4px 0; }
+
+  /* ── CENTER ── */
+  .center {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  #canvas-container {
+    flex: 1; position: relative;
+    background: radial-gradient(ellipse at 50% 40%, #0a1a28 0%, var(--bg) 70%);
+  }
+  canvas {
+    display: block; width: 100%; height: 100%;
+    cursor: crosshair;
+  }
+  canvas.mode-node { cursor: cell; }
+  canvas.mode-edge { cursor: crosshair; }
+  canvas.mode-delete { cursor: not-allowed; }
+
+  .canvas-hint {
+    position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem; color: var(--text-dim);
+    background: rgba(8,12,16,0.85);
+    padding: 5px 14px; border-radius: 2px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+  }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    grid-row: 1 / 3;
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .tables-area {
+    flex: 1; overflow-y: auto; padding: 10px;
+  }
+  .tables-area::-webkit-scrollbar { width: 4px; }
+  .tables-area::-webkit-scrollbar-track { background: var(--panel); }
+  .tables-area::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .dv-table-block {
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .dv-table-header {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem; letter-spacing: 2px;
+    padding: 6px 10px;
+    background: rgba(0,255,231,0.07);
+    color: var(--accent);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .dv-table-header .node-badge {
+    display: inline-block;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--panel2);
+    border: 2px solid var(--accent);
+    text-align: center; line-height: 18px;
+    font-size: 0.75rem; font-weight: bold;
+  }
+
+  table.dv {
+    width: 100%; border-collapse: collapse;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+  }
+  table.dv th {
+    background: var(--panel2);
+    color: var(--text-dim);
+    padding: 4px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    font-weight: normal; letter-spacing: 1px;
+  }
+  table.dv td {
+    padding: 3px 8px; text-align: center;
+    border-bottom: 1px solid rgba(30,58,74,0.4);
+    transition: background 0.4s, color 0.4s;
+  }
+  table.dv td.updated { background: rgba(0,255,231,0.12); color: var(--accent); }
+  table.dv td.bounce-cell { background: rgba(255,45,85,0.15); color: var(--red); animation: pulse-red 0.6s ease; }
+  table.dv td.inf { color: var(--text-dim); }
+  table.dv tr:last-child td { border-bottom: none; }
+
+  @keyframes pulse-red {
+    0%,100% { background: rgba(255,45,85,0.15); }
+    50% { background: rgba(255,45,85,0.35); }
+  }
+
+  /* Presets */
+  .presets-bar {
+    padding: 10px;
+    display: flex; gap: 6px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,255,231,0.02);
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 28px 32px;
+    max-width: 420px; width: 90%;
+    box-shadow: 0 0 40px rgba(0,255,231,0.2);
+  }
+  .modal h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem; color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .modal p { font-size: 0.82rem; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+
+  /* node label edit */
+  #label-input {
+    position: absolute; display: none;
+    font-family: 'Orbitron', monospace; font-size: 0.8rem;
+    background: var(--panel2); border: 1px solid var(--accent);
+    color: var(--accent); padding: 4px 8px;
+    border-radius: 2px; z-index: 100;
+    width: 48px; text-align: center;
+  }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem; padding: 3px 8px;
+    border-radius: 10px;
+  }
+  .pill-cyan { background: rgba(0,255,231,0.1); border: 1px solid rgba(0,255,231,0.3); color: var(--accent); }
+  .pill-orange { background: rgba(255,107,53,0.1); border: 1px solid rgba(255,107,53,0.3); color: var(--accent2); }
+  .pill-purple { background: rgba(162,89,255,0.1); border: 1px solid rgba(162,89,255,0.3); color: var(--accent3); }
+
+  .info-strip {
+    padding: 6px 16px;
+    background: rgba(0,255,231,0.03);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.65rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>DISTANCE VECTOR</h1>
+    <div class="sub">ROUTING ALGORITHM SIMULATOR v2.0</div>
+  </div>
+  <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+    <span class="pill pill-cyan">● BELLMAN-FORD</span>
+    <span class="pill pill-orange">● COUNT-TO-∞</span>
+    <span class="pill pill-purple">● BOUNCING</span>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="panel-title">// CONTROLLI</div>
+
+    <div class="toolbar">
+      <div class="section-label">Modalità editor</div>
+      <div class="toolbar-row">
+        <button class="btn active" id="btn-node" onclick="setMode('node')">+ NODO</button>
+        <button class="btn" id="btn-edge" onclick="setMode('edge')">+ ARCO</button>
+        <button class="btn danger" id="btn-delete" onclick="setMode('delete')">✕ ELIM</button>
+      </div>
+      <div class="section-label">Rete preimpostata</div>
+      <div class="toolbar-row">
+        <button class="btn btn-full" onclick="loadPreset('correct')" style="border-color:var(--green); color:var(--green)">▶ CONVERGENZA</button>
+      </div>
+      <div class="toolbar-row">
+        <button class="btn btn-full warn" onclick="loadPreset('bouncing')">⚠ COUNT-TO-∞</button>
+      </div>
+      <div class="toolbar-row">
+        <button class="btn danger btn-full" onclick="clearAll()">↺ RESET RETE</button>
+      </div>
+    </div>
+
+    <div class="edge-form" id="edge-form-panel" style="display:none">
+      <div class="section-label">Aggiungi arco manuale</div>
+      <div class="edge-form-row">
+        <select id="ef-from"></select>
+        <select id="ef-to"></select>
+      </div>
+      <div class="edge-form-row">
+        <input type="number" id="ef-cost" placeholder="Costo" min="1" value="1" style="width:80px">
+        <button class="btn" onclick="addEdgeManual()" style="flex:2; border-color:var(--green); color:var(--green)">+ ARCO</button>
+      </div>
+    </div>
+
+    <div class="step-controls">
+      <div class="section-label">Simulazione</div>
+      <div class="speed-row">
+        <label>VELOCITÀ</label>
+        <input type="range" id="speed-slider" min="100" max="2000" value="800" step="100">
+        <span id="speed-label" style="font-family:Share Tech Mono; font-size:0.65rem; color:var(--accent); min-width:40px">800ms</span>
+      </div>
+      <button class="btn run btn-full" id="btn-run" onclick="startDV()">▶ AVVIA DV</button>
+      <div class="toolbar-row">
+        <button class="btn" id="btn-prev" onclick="stepDV(-1)" disabled>◀ PREC</button>
+        <button class="btn" id="btn-next" onclick="stepDV(1)" disabled>SUCC ▶</button>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="step-info" id="step-info">—</div>
+    </div>
+
+    <div class="panel-title">// LOG EVENTI</div>
+    <div class="log" id="log"></div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center">
+    <div class="info-strip" id="info-strip">
+      <span style="color:var(--text-dim); font-family:Share Tech Mono; font-size:0.65rem">
+        Clicca sulla canvas per aggiungere nodi. Seleziona due nodi per creare un arco.
+      </span>
+    </div>
+    <div id="canvas-container">
+      <canvas id="canvas"></canvas>
+      <div class="canvas-hint" id="canvas-hint">MODALITÀ: AGGIUNGI NODO — clicca per posizionare</div>
+      <input id="label-input" type="text" maxlength="3">
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="panel-title">// TABELLE DI ROUTING</div>
+    <div class="tables-area" id="tables-area">
+      <div style="font-family:Share Tech Mono; font-size:0.68rem; color:var(--text-dim); padding:20px; text-align:center;">
+        Aggiungi nodi e avvia<br>la simulazione per<br>visualizzare le tabelle.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modal-title">ATTENZIONE</h2>
+    <p id="modal-body"></p>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal()">ANNULLA</button>
+      <button class="btn run" id="modal-confirm" onclick="confirmModal()">CONFERMA</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  DATA MODEL
+// ═══════════════════════════════════════════════════
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const INF = Infinity;
+
+let nodes = [];       // {id, x, y, label}
+let edges = [];       // {from, to, cost}
+let mode = 'node';    // 'node' | 'edge' | 'delete'
+let selectedNode = null;
+let edgeStart = null;
+let nodeIdCounter = 0;
+
+// DV sim state
+let dvSteps = [];     // snapshots of all tables per round
+let dvCurrentStep = -1;
+let dvRunning = false;
+let dvTimer = null;
+let dvMaxSteps = 0;
+
+let modalCallback = null;
+
+// ═══════════════════════════════════════════════════
+//  CANVAS RESIZE
+// ═══════════════════════════════════════════════════
+function resizeCanvas() {
+  const c = document.getElementById('canvas-container');
+  canvas.width = c.clientWidth;
+  canvas.height = c.clientHeight;
+  draw();
+}
+window.addEventListener('resize', resizeCanvas);
+setTimeout(resizeCanvas, 50);
+
+// ═══════════════════════════════════════════════════
+//  PRESETS
+// ═══════════════════════════════════════════════════
+function loadPreset(type) {
+  if (nodes.length > 0 || edges.length > 0) {
+    showModal(
+      'CARICARE PRESET?',
+      'La rete corrente verrà cancellata. Continuare?',
+      () => { clearAll(true); _doLoadPreset(type); }
+    );
+  } else {
+    _doLoadPreset(type);
+  }
+}
+
+function _doLoadPreset(type) {
+  clearAll(true);
+  dvSteps = []; dvCurrentStep = -1; updateStepUI();
+
+  if (type === 'correct') {
+    // 5-node network, simple convergenza sana
+    const W = canvas.width, H = canvas.height;
+    const cx = W/2, cy = H/2, r = Math.min(W,H)*0.32;
+    const labels = ['A','B','C','D','E'];
+    const angles = [270,342,54,126,198].map(a => a*Math.PI/180);
+    labels.forEach((l, i) => {
+      nodes.push({ id: nodeIdCounter++, x: cx + r*Math.cos(angles[i]), y: cy + r*Math.sin(angles[i]), label: l });
+    });
+    const [A,B,C,D,E] = nodes.map(n=>n.id);
+    edges.push(
+      {from:A,to:B,cost:1}, {from:B,to:C,cost:2}, {from:C,to:D,cost:1},
+      {from:D,to:E,cost:3}, {from:E,to:A,cost:2}, {from:B,to:D,cost:4},
+      {from:A,to:C,cost:7}
+    );
+    logMsg('Rete CONVERGENZA caricata (5 nodi, 7 archi)', 'converge');
+    logMsg('Algoritmo DV convergerà correttamente in pochi round', 'info');
+  } else {
+    // 3-node network per count-to-infinity
+    // A--1--B--1--C   poi eliminiamo A-B
+    const W = canvas.width, H = canvas.height;
+    const cy = H/2;
+    nodes.push({ id: nodeIdCounter++, x: W*0.2, y: cy, label: 'A' });
+    nodes.push({ id: nodeIdCounter++, x: W*0.5, y: cy, label: 'B' });
+    nodes.push({ id: nodeIdCounter++, x: W*0.8, y: cy, label: 'C' });
+    const [A,B,C] = nodes.map(n=>n.id);
+    edges.push({from:A,to:B,cost:1}, {from:B,to:C,cost:1});
+    logMsg('Rete COUNT-TO-∞ caricata (A─B─C)', 'bounce');
+    logMsg('Avvia DV → converge. Poi elimina arco A─B e riavvia.', 'info');
+    logMsg('Osserva il bouncing: B e C si incrementano a vicenda!', 'bounce');
+  }
+
+  nodeIdCounter = nodes.length;
+  resetDV();
+  draw();
+  updateEdgeForm();
+}
+
+// ═══════════════════════════════════════════════════
+//  DRAW
+// ═══════════════════════════════════════════════════
+const NODE_R = 26;
+const COLORS = ['#00ffe7','#ff6b35','#a259ff','#ffe600','#39ff14','#ff2d55','#00b4d8','#f72585'];
+
+function nodeColor(idx) { return COLORS[idx % COLORS.length]; }
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(30,58,74,0.35)';
+  ctx.lineWidth = 0.5;
+  const gs = 40;
+  for (let x = 0; x < canvas.width; x += gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+  for (let y = 0; y < canvas.height; y += gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+
+  // Edges
+  edges.forEach(e => drawEdge(e));
+
+  // Edge preview
+  if (mode === 'edge' && edgeStart !== null && mousePos) {
+    const n = getNodeById(edgeStart);
+    if (n) {
+      ctx.save();
+      ctx.setLineDash([6,4]);
+      ctx.strokeStyle = 'rgba(0,255,231,0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(mousePos.x, mousePos.y); ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // Nodes
+  nodes.forEach((n, i) => drawNode(n, i));
+}
+
+function drawEdge(e) {
+  const a = getNodeById(e.from), b = getNodeById(e.to);
+  if (!a || !b) return;
+
+  // Highlight if animating
+  let lw = 2, color = 'rgba(30,80,100,0.9)';
+  if (dvCurrentStep >= 0 && dvSteps[dvCurrentStep]) {
+    const step = dvSteps[dvCurrentStep];
+    if (step.activeEdge && ((step.activeEdge.from===e.from&&step.activeEdge.to===e.to)||(step.activeEdge.from===e.to&&step.activeEdge.to===e.from))) {
+      lw = 3; color = 'rgba(0,255,231,0.9)';
+    }
+    if (step.bounceEdge && ((step.bounceEdge.from===e.from&&step.bounceEdge.to===e.to)||(step.bounceEdge.from===e.to&&step.bounceEdge.to===e.from))) {
+      lw = 3; color = 'rgba(255,45,85,0.9)';
+    }
+  }
+
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lw;
+  if (lw > 2) ctx.shadowColor = color; ctx.shadowBlur = 10;
+  ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  ctx.restore();
+
+  // Cost label
+  const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+  ctx.save();
+  ctx.fillStyle = 'rgba(8,12,16,0.85)';
+  ctx.beginPath(); ctx.arc(mx, my, 13, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = lw>2 ? color : 'rgba(30,80,100,0.8)';
+  ctx.lineWidth = 1; ctx.stroke();
+  ctx.fillStyle = lw>2 ? color : '#7ab'; 
+  ctx.font = 'bold 11px Share Tech Mono';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(e.cost, mx, my);
+  ctx.restore();
+}
+
+function drawNode(n, i) {
+  const color = nodeColor(i);
+  const isSelected = selectedNode === n.id || edgeStart === n.id;
+  const r = NODE_R;
+
+  ctx.save();
+  // Glow
+  if (isSelected) {
+    ctx.shadowColor = color; ctx.shadowBlur = 30;
+  }
+  // Outer ring
+  ctx.beginPath(); ctx.arc(n.x, n.y, r+4, 0, Math.PI*2);
+  ctx.strokeStyle = isSelected ? color : 'rgba(30,80,100,0.5)';
+  ctx.lineWidth = 1; ctx.stroke();
+
+  // Fill
+  ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+  const grad = ctx.createRadialGradient(n.x-r*0.3, n.y-r*0.3, r*0.1, n.x, n.y, r);
+  grad.addColorStop(0, hexToRgba(color, 0.35));
+  grad.addColorStop(1, hexToRgba(color, 0.08));
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Label
+  ctx.fillStyle = color;
+  ctx.font = `bold 14px Orbitron, monospace`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.shadowColor = color; ctx.shadowBlur = 10;
+  ctx.fillText(n.label, n.x, n.y);
+
+  // Highlight ring on active step
+  if (dvCurrentStep >= 0 && dvSteps[dvCurrentStep]) {
+    const step = dvSteps[dvCurrentStep];
+    if (step.updatingNode === n.id) {
+      ctx.beginPath(); ctx.arc(n.x, n.y, r+9, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(0,255,231,0.6)'; ctx.lineWidth = 2;
+      ctx.setLineDash([4,4]);
+      ctx.stroke();
+    }
+    if (step.bouncingNode === n.id) {
+      ctx.beginPath(); ctx.arc(n.x, n.y, r+9, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(255,45,85,0.6)'; ctx.lineWidth = 2;
+      ctx.setLineDash([4,4]);
+      ctx.stroke();
+    }
+  }
+
+  ctx.restore();
+}
+
+function hexToRgba(hex, a) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+// ═══════════════════════════════════════════════════
+//  MOUSE
+// ═══════════════════════════════════════════════════
+let mousePos = null;
+let draggingNode = null;
+let dragOffset = {x:0, y:0};
+
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mousePos = { x: e.clientX-rect.left, y: e.clientY-rect.top };
+  if (draggingNode) {
+    draggingNode.x = mousePos.x + dragOffset.x;
+    draggingNode.y = mousePos.y + dragOffset.y;
+  }
+  draw();
+});
+
+canvas.addEventListener('mousedown', e => {
+  if (dvRunning) return;
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  const hit = nodeAt(mx, my);
+
+  if (mode === 'node') {
+    if (hit) {
+      // Start drag
+      draggingNode = hit;
+      dragOffset = { x: hit.x-mx, y: hit.y-my };
+    } else {
+      const label = String.fromCharCode(65 + nodes.length % 26) + (nodes.length >= 26 ? Math.floor(nodes.length/26) : '');
+      nodes.push({ id: nodeIdCounter++, x: mx, y: my, label: label.replace(/0$/,'') });
+      updateEdgeForm();
+      draw();
+    }
+  } else if (mode === 'edge') {
+    if (hit) {
+      if (edgeStart === null) {
+        edgeStart = hit.id;
+      } else if (edgeStart !== hit.id) {
+        promptEdgeCost(edgeStart, hit.id);
+        edgeStart = null;
+      } else {
+        edgeStart = null;
+      }
+    } else {
+      edgeStart = null;
+    }
+    draw();
+  } else if (mode === 'delete') {
+    if (hit) {
+      nodes = nodes.filter(n => n.id !== hit.id);
+      edges = edges.filter(e => e.from !== hit.id && e.to !== hit.id);
+      updateEdgeForm(); resetDV(); draw();
+    } else {
+      // Try to delete edge near click
+      const ei = edgeNear(mx, my);
+      if (ei !== -1) { edges.splice(ei,1); resetDV(); draw(); }
+    }
+  }
+});
+
+canvas.addEventListener('mouseup', () => { draggingNode = null; });
+canvas.addEventListener('mouseleave', () => { mousePos = null; draw(); });
+canvas.addEventListener('dblclick', e => {
+  if (mode !== 'node') return;
+  const rect = canvas.getBoundingClientRect();
+  const hit = nodeAt(e.clientX-rect.left, e.clientY-rect.top);
+  if (hit) startLabelEdit(hit, e.clientX, e.clientY);
+});
+
+function nodeAt(x, y) {
+  for (let i = nodes.length-1; i >= 0; i--) {
+    const n = nodes[i];
+    if (Math.hypot(n.x-x, n.y-y) <= NODE_R+6) return n;
+  }
+  return null;
+}
+
+function edgeNear(x, y, thresh=12) {
+  for (let i = 0; i < edges.length; i++) {
+    const e = edges[i];
+    const a = getNodeById(e.from), b = getNodeById(e.to);
+    if (!a||!b) continue;
+    const d = ptSegDist(x,y, a.x,a.y, b.x,b.y);
+    if (d < thresh) return i;
+  }
+  return -1;
+}
+
+function ptSegDist(px,py, ax,ay, bx,by) {
+  const dx=bx-ax, dy=by-ay;
+  if (dx===0&&dy===0) return Math.hypot(px-ax, py-ay);
+  const t = Math.max(0,Math.min(1, ((px-ax)*dx+(py-ay)*dy)/(dx*dx+dy*dy)));
+  return Math.hypot(px-ax-t*dx, py-ay-t*dy);
+}
+
+// ═══════════════════════════════════════════════════
+//  LABEL EDIT
+// ═══════════════════════════════════════════════════
+let editingNode = null;
+const labelInput = document.getElementById('label-input');
+function startLabelEdit(node, cx, cy) {
+  editingNode = node;
+  const rect = canvas.getBoundingClientRect();
+  labelInput.style.left = (cx - rect.left - 24) + 'px';
+  labelInput.style.top  = (cy - rect.top - 14) + 'px';
+  labelInput.style.display = 'block';
+  labelInput.value = node.label;
+  labelInput.focus(); labelInput.select();
+}
+labelInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === 'Escape') {
+    if (editingNode && labelInput.value.trim()) editingNode.label = labelInput.value.trim().toUpperCase();
+    labelInput.style.display = 'none'; editingNode = null; draw();
+  }
+});
+labelInput.addEventListener('blur', () => {
+  if (editingNode && labelInput.value.trim()) editingNode.label = labelInput.value.trim().toUpperCase();
+  labelInput.style.display = 'none'; editingNode = null; draw();
+});
+
+// ═══════════════════════════════════════════════════
+//  EDGE CREATION PROMPT
+// ═══════════════════════════════════════════════════
+let pendingEdge = null;
+function promptEdgeCost(fromId, toId) {
+  // Check duplicate
+  if (edges.find(e => (e.from===fromId&&e.to===toId)||(e.from===toId&&e.to===fromId))) {
+    logMsg('Arco già esistente!', 'info'); return;
+  }
+  pendingEdge = {from:fromId, to:toId};
+  const fa = getNodeById(fromId), fb = getNodeById(toId);
+  showModal(
+    'NUOVO ARCO',
+    `Costo dell'arco <b>${fa.label} ↔ ${fb.label}</b>:<br><input id="cost-input" type="number" min="1" value="1" style="font-family:Share Tech Mono; font-size:1rem; background:#0d1117; border:1px solid #00ffe7; color:#00ffe7; padding:6px 10px; width:100%; margin-top:8px; border-radius:2px; text-align:center;">`,
+    () => {
+      const v = parseInt(document.getElementById('cost-input').value);
+      if (isNaN(v)||v<1) return;
+      edges.push({from:pendingEdge.from, to:pendingEdge.to, cost:v});
+      resetDV(); draw(); updateEdgeForm();
+      logMsg(`Arco ${getNodeById(pendingEdge.from).label}─${getNodeById(pendingEdge.to).label} (costo ${v}) aggiunto`, 'info');
+      pendingEdge = null;
+    }
+  );
+  setTimeout(()=>{ const ci=document.getElementById('cost-input'); if(ci){ci.focus();ci.select();} },100);
+}
+
+function addEdgeManual() {
+  const fv = parseInt(document.getElementById('ef-from').value);
+  const tv = parseInt(document.getElementById('ef-to').value);
+  const cv = parseInt(document.getElementById('ef-cost').value);
+  if (isNaN(fv)||isNaN(tv)||fv===tv) { logMsg('Seleziona nodi distinti','info'); return; }
+  if (isNaN(cv)||cv<1) { logMsg('Costo non valido','info'); return; }
+  if (edges.find(e=>(e.from===fv&&e.to===tv)||(e.from===tv&&e.to===fv))) { logMsg('Arco già esistente!','info'); return; }
+  edges.push({from:fv, to:tv, cost:cv});
+  resetDV(); draw();
+  logMsg(`Arco aggiunto: ${getNodeById(fv).label}─${getNodeById(tv).label} (${cv})`, 'info');
+}
+
+function updateEdgeForm() {
+  ['ef-from','ef-to'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = nodes.map(n => `<option value="${n.id}">${n.label}</option>`).join('');
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  MODE
+// ═══════════════════════════════════════════════════
+function setMode(m) {
+  mode = m; edgeStart = null;
+  ['node','edge','delete'].forEach(x => document.getElementById('btn-'+x).classList.remove('active'));
+  document.getElementById('btn-'+m).classList.add('active');
+  canvas.className = 'mode-'+m;
+  const hints = {
+    node: 'AGGIUNGI NODO — clicca per posizionare | doppio-click per rinominare',
+    edge: 'AGGIUNGI ARCO — seleziona nodo di partenza, poi destinazione',
+    delete: 'ELIMINA — clicca su un nodo o su un arco per rimuoverlo'
+  };
+  document.getElementById('canvas-hint').textContent = 'MODALITÀ: ' + hints[m];
+  document.getElementById('edge-form-panel').style.display = m==='edge' ? 'block' : 'none';
+  draw();
+}
+
+// ═══════════════════════════════════════════════════
+//  DV ALGORITHM
+// ═══════════════════════════════════════════════════
+function getNodeById(id) { return nodes.find(n=>n.id===id)||null; }
+function getNeighbors(id) {
+  const nbrs = [];
+  edges.forEach(e => {
+    if (e.from===id) nbrs.push({node:e.to, cost:e.cost});
+    else if (e.to===id) nbrs.push({node:e.from, cost:e.cost});
+  });
+  return nbrs;
+}
+
+function buildDVSteps() {
+  if (nodes.length === 0) return [];
+  const steps = [];
+  const COUNT_LIMIT = 20; // cap count-to-infinity at 20 rounds
+
+  // Init tables: dist[node][dest] = {cost, via}
+  const ids = nodes.map(n=>n.id);
+  let tables = {};
+  ids.forEach(id => {
+    tables[id] = {};
+    ids.forEach(d => {
+      tables[id][d] = { cost: id===d ? 0 : INF, via: id===d ? id : null };
+    });
+    getNeighbors(id).forEach(nb => {
+      tables[id][nb.node] = { cost: nb.cost, via: nb.node };
+    });
+  });
+
+  // Snapshot initial state
+  steps.push({ type:'init', tables: deepClone(tables), round:0, desc:'Inizializzazione: ogni nodo conosce solo i vicini diretti', activeEdge:null, updatingNode:null, bounceEdge:null, bouncingNode:null, changes:[] });
+
+  let round = 0;
+  let globalChanged = true;
+  let isBouncing = false;
+
+  while (globalChanged && round < COUNT_LIMIT) {
+    round++;
+    globalChanged = false;
+    const newTables = deepClone(tables);
+    const roundChanges = [];
+    let hasBounce = false;
+
+    steps.push({ type:'round_start', tables: deepClone(tables), round, desc:`Round ${round}: tutti i nodi inviano i loro vettori ai vicini`, activeEdge:null, updatingNode:null, bounceEdge:null, bouncingNode:null, changes:[] });
+
+    // Each node updates based on neighbors
+    ids.forEach(id => {
+      getNeighbors(id).forEach(nb => {
+        // Node 'id' receives vector from neighbor 'nb.node'
+        ids.forEach(dest => {
+          if (dest === id) return;
+          const costViaNb = nb.cost + tables[nb.node][dest].cost;
+          if (costViaNb < INF && costViaNb < newTables[id][dest].cost) {
+            const old = newTables[id][dest].cost;
+            newTables[id][dest] = { cost: costViaNb, via: nb.node };
+            globalChanged = true;
+            roundChanges.push({ node:id, dest, oldCost:old, newCost:costViaNb, via:nb.node });
+
+            // Detect bouncing: if A routes to dest via B, and B routes to dest via A => bouncing
+            const isBounce = newTables[nb.node][dest].via === id;
+            if (isBounce) hasBounce = true;
+
+            steps.push({
+              type: isBounce ? 'bounce' : 'update',
+              tables: deepClone(newTables),
+              round,
+              desc: isBounce
+                ? `⚠ BOUNCE: ${getNodeById(id).label} aggiorna [${getNodeById(dest).label}] via ${getNodeById(nb.node).label} = ${costViaNb} (ma ${getNodeById(nb.node).label} già passa per ${getNodeById(id).label}!)`
+                : `${getNodeById(id).label} aggiorna [${getNodeById(dest).label}]: ${old===INF?'∞':old} → ${costViaNb} (via ${getNodeById(nb.node).label})`,
+              activeEdge: isBounce ? null : {from:id, to:nb.node},
+              bounceEdge: isBounce ? {from:id, to:nb.node} : null,
+              updatingNode: isBounce ? null : id,
+              bouncingNode: isBounce ? id : null,
+              changes: roundChanges.slice(),
+              dest, via:nb.node, cost:costViaNb
+            });
+          }
+        });
+      });
+    });
+
+    tables = newTables;
+    if (hasBounce) isBouncing = true;
+  }
+
+  const converged = round < COUNT_LIMIT;
+  steps.push({
+    type: converged ? 'converge' : 'count_infinity',
+    tables: deepClone(tables),
+    round,
+    desc: converged
+      ? `✓ CONVERGENZA al round ${round}! Le tabelle sono stabili.`
+      : `⚠ COUNT-TO-INFINITY! L'algoritmo non converge dopo ${COUNT_LIMIT} round.`,
+    activeEdge:null, updatingNode:null, bounceEdge:null, bouncingNode:null, changes:[]
+  });
+
+  return steps;
+}
+
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj, (k,v) => v===Infinity ? '__INF__' : v));
+}
+function restoreClone(obj) {
+  const str = JSON.stringify(obj);
+  return JSON.parse(str.replace(/"__INF__"/g, '1e308'));
+}
+function cloneStep(s) {
+  const cloned = restoreClone(s);
+  // Restore INF
+  Object.values(cloned.tables).forEach(t => {
+    Object.values(t).forEach(entry => {
+      if (entry.cost > 1e300) entry.cost = Infinity;
+    });
+  });
+  return cloned;
+}
+
+function startDV() {
+  if (nodes.length < 2) { logMsg('Servono almeno 2 nodi!','info'); return; }
+  clearLog();
+  dvSteps = buildDVSteps();
+  dvMaxSteps = dvSteps.length;
+  dvCurrentStep = 0;
+  updateStepUI();
+  renderStep(dvSteps[0]);
+
+  if (!document.getElementById('btn-run').classList.contains('paused')) {
+    autoPlay();
+  }
+}
+
+function autoPlay() {
+  dvRunning = true;
+  document.getElementById('btn-run').textContent = '⏸ PAUSA';
+  document.getElementById('btn-run').onclick = pauseDV;
+  runNext();
+}
+
+function runNext() {
+  if (!dvRunning) return;
+  if (dvCurrentStep < dvMaxSteps-1) {
+    dvCurrentStep++;
+    renderStep(dvSteps[dvCurrentStep]);
+    const speed = parseInt(document.getElementById('speed-slider').value);
+    dvTimer = setTimeout(runNext, speed);
+  } else {
+    dvRunning = false;
+    document.getElementById('btn-run').textContent = '↺ RIAVVIA';
+    document.getElementById('btn-run').onclick = startDV;
+  }
+}
+
+function pauseDV() {
+  dvRunning = false;
+  clearTimeout(dvTimer);
+  document.getElementById('btn-run').textContent = '▶ RIPRENDI';
+  document.getElementById('btn-run').onclick = resumeDV;
+}
+
+function resumeDV() {
+  autoPlay();
+}
+
+function stepDV(dir) {
+  if (dvSteps.length === 0) return;
+  pauseDV();
+  dvCurrentStep = Math.max(0, Math.min(dvMaxSteps-1, dvCurrentStep+dir));
+  renderStep(dvSteps[dvCurrentStep]);
+}
+
+function resetDV() {
+  dvSteps = []; dvCurrentStep = -1; dvRunning = false;
+  clearTimeout(dvTimer);
+  document.getElementById('btn-run').textContent = '▶ AVVIA DV';
+  document.getElementById('btn-run').onclick = startDV;
+  updateStepUI();
+  renderTables(null);
+}
+
+function clearAll(silent=false) {
+  nodes = []; edges = []; nodeIdCounter = 0;
+  selectedNode = null; edgeStart = null;
+  resetDV(); draw(); updateEdgeForm();
+  if (!silent) { clearLog(); logMsg('Rete azzerata','info'); }
+}
+
+function updateStepUI() {
+  const prev = document.getElementById('btn-prev');
+  const next = document.getElementById('btn-next');
+  const info = document.getElementById('step-info');
+  const fill = document.getElementById('progress-fill');
+
+  if (dvMaxSteps === 0) {
+    prev.disabled = true; next.disabled = true;
+    info.textContent = '—';
+    fill.style.width = '0%';
+  } else {
+    prev.disabled = dvCurrentStep <= 0;
+    next.disabled = dvCurrentStep >= dvMaxSteps-1;
+    info.textContent = `Step ${dvCurrentStep+1} / ${dvMaxSteps}`;
+    fill.style.width = ((dvCurrentStep+1)/dvMaxSteps*100).toFixed(1)+'%';
+  }
+}
+
+function renderStep(step) {
+  updateStepUI();
+  draw();
+
+  // Log
+  if (step.type === 'round_start') {
+    logMsg(`── ROUND ${step.round} ──`, 'round');
+  } else if (step.type === 'init') {
+    logMsg('INIT: tabelle inizializzate con costi diretti', 'info');
+  } else if (step.type === 'update') {
+    logMsg(step.desc, 'update');
+  } else if (step.type === 'bounce') {
+    logMsg(step.desc, 'bounce');
+  } else if (step.type === 'converge') {
+    logMsg(step.desc, 'converge');
+  } else if (step.type === 'count_infinity') {
+    logMsg(step.desc, 'bounce');
+  }
+
+  document.getElementById('step-info').textContent = `Step ${dvCurrentStep+1}/${dvMaxSteps} — ${step.type.toUpperCase()}`;
+  renderTables(step.tables, step);
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER TABLES
+// ═══════════════════════════════════════════════════
+function renderTables(tables, step) {
+  const area = document.getElementById('tables-area');
+  if (!tables || nodes.length === 0) {
+    area.innerHTML = '<div style="font-family:Share Tech Mono; font-size:0.68rem; color:var(--text-dim); padding:20px; text-align:center;">Avvia la simulazione<br>per vedere le tabelle.</div>';
+    return;
+  }
+
+  const ids = nodes.map(n=>n.id);
+  let html = '';
+  nodes.forEach((node, ni) => {
+    const t = tables[node.id];
+    if (!t) return;
+    html += `<div class="dv-table-block">
+      <div class="dv-table-header">
+        <span><span class="node-badge" style="border-color:${nodeColor(ni)};color:${nodeColor(ni)}">${node.label}</span> &nbsp; NODO ${node.label}</span>
+        <span style="color:var(--text-dim); font-size:0.6rem">${step?'ROUND '+step.round:''}</span>
+      </div>
+      <table class="dv">
+        <thead><tr><th>DEST</th><th>COSTO</th><th>VIA</th></tr></thead>
+        <tbody>`;
+    ids.forEach(dest => {
+      const d = t[dest];
+      if (!d) return;
+      const destNode = getNodeById(dest);
+      const viaNode = d.via !== null ? getNodeById(d.via) : null;
+      const cost = d.cost;
+      let cls = '';
+      if (cost === Infinity) cls = 'inf';
+      if (step && step.type === 'update' && step.updatingNode === node.id && step.dest === dest) cls = 'updated';
+      if (step && step.type === 'bounce' && step.bouncingNode === node.id && step.dest === dest) cls = 'bounce-cell';
+      html += `<tr>
+        <td style="color:${nodeColor(nodes.findIndex(n=>n.id===dest))}">${destNode?destNode.label:'?'}</td>
+        <td class="${cls}">${cost===Infinity?'∞':cost}</td>
+        <td>${dest===node.id ? '<span style="color:var(--text-dim)">self</span>' : viaNode ? viaNode.label : '—'}</td>
+      </tr>`;
+    });
+    html += '</tbody></table></div>';
+  });
+  area.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════
+//  LOG
+// ═══════════════════════════════════════════════════
+function logMsg(msg, type='info') {
+  const log = document.getElementById('log');
+  const d = document.createElement('div');
+  d.className = 'log-entry ' + type;
+  const ts = new Date().toLocaleTimeString('it',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  d.textContent = `[${ts}] ${msg}`;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+function clearLog() {
+  document.getElementById('log').innerHTML = '';
+}
+
+// ═══════════════════════════════════════════════════
+//  SPEED SLIDER
+// ═══════════════════════════════════════════════════
+document.getElementById('speed-slider').addEventListener('input', function() {
+  document.getElementById('speed-label').textContent = this.value+'ms';
+});
+
+// ═══════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════
+function showModal(title, body, onConfirm) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  modalCallback = onConfirm;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  modalCallback = null;
+}
+function confirmModal() {
+  document.getElementById('modal').classList.remove('open');
+  if (modalCallback) { modalCallback(); modalCallback = null; }
+}
+document.getElementById('modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+setMode('node');
+logMsg('Simulatore Distance Vector avviato', 'converge');
+logMsg('Usa i preset o costruisci una rete custom', 'info');
+logMsg('Preset CONVERGENZA: rete sana, DV converge', 'info');
+logMsg('Preset COUNT-TO-∞: rimuovi arco A-B dopo convergenza!', 'bounce');
+</script>
+</body>
+</html>

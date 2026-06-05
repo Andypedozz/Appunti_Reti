@@ -60,7 +60,7 @@ Formato da 4 numeri decimali separati da punti, ma internamente gli IP sono memo
     11010000.01000011.11011100.11011100
 </p>
 
-Il numero di IPv4 esistenti è **$2^{32}$** (circa 4 miliardi e 300 milioni).
+Il numero di IPv4 esistenti è **2^32** (circa 4 miliardi e 300 milioni).
 Originariamente lo schema per individuare un IPv4 era **classful**; l'indirizzo era ad autoidentificazione: per capire la classe a cui apparteneva **bastava identificare i primi 4 bit** più significativi dell'IP.
 
 <p style="text-align: center; font-weight: bold;">
@@ -103,7 +103,7 @@ I range di IP privati sono:
 
 ## Protocollo IPv6 e Indirizzamento
 IPv6 è nato negli anni '90 a causa dell'esaurimento degli IPv4. E' un protocollo molto diverso da IPv4 e la sua crescita è stata molto lenta.
-Esso usa indirizzi a 128 bit, costituendo uno spazio di indirizzamento molto più grande: $2^{128}$.
+Esso usa indirizzi a 128 bit, costituendo uno spazio di indirizzamento molto più grande: 2^128.
 
 La lunghezza degli indirizzi ha portato anche alla loro scrittura in esadecimale, per un totale di 32 caratteri raggruppati in 8 parole da 4 caratteri ciascuno, separate da 2 punti.
 
@@ -154,7 +154,7 @@ In sostanza, un router dell'ISP delega al router del cliente la possibilità di 
     2001:db8:aaaa:1a00::/56
 </p>
 
-L'Interface ID di IPv6 occupa sempre la seconda metà dell'IP, quindi il prefisso delegato è divisibile in tante sottoreti (es. /64). Con un prefisso /56 possiamo creare 256 sottoreti /64 ($2^{64 - 56} = 2^{8}$). Gli IP assegnati ai dispositivi della rete vengono scelti da una o più di queste subnet /64, creando cosi sottoreti dedicate a quella cablata, quella WiFi, quella ospiti, e anche scenari più complessi.
+L'Interface ID di IPv6 occupa sempre la seconda metà dell'IP, quindi il prefisso delegato è divisibile in tante sottoreti (es. /64). Con un prefisso /56 possiamo creare 256 sottoreti /64 (2^64 - 56 = 2^8). Gli IP assegnati ai dispositivi della rete vengono scelti da una o più di queste subnet /64, creando cosi sottoreti dedicate a quella cablata, quella WiFi, quella ospiti, e anche scenari più complessi.
 Ogni rete permette di avere circa 18 miliardi di miliardi di IPv6.
 
 Tutti gli IPv6 sono assegnabili manualmente o tramite DHCPv6.
@@ -201,7 +201,66 @@ Gli algoritmi di routing sono valutabili in base alla loro:
 * Robustezza: capacità di continuare a funzionare a fronte di guasti hardware, alto carico e traffico.
 
 ### Distance Vector
+Distance Vector è un algoritmo basato sull'algoritmo di Bellmann-Ford. L'idea di base è che ogno nodo mantenga una tabella che ne indica la distanza da ogni altro nodo della rete.
+A cold start ogni nodo conosce solo il proprio indirizzo, ignorando la topologia della rete e la distanza dagli altri. Prendiamo una rete come quella in figura.
 
+<div style="text-align: center;">
+    <img src="image-1.png">
+</div>
+
+Le tabelle al cold start saranno:
+
+Tabella A
+|Nodo|Distanza|Next Hop|
+|-|-|-|
+|A|0|A|
+
+Tabella C
+|Nodo|Distanza|Next Hop|
+|-|-|-|
+|C|0|C|
+
+Tabella D
+|Nodo|Distanza|Next Hop|
+|-|-|-|
+|D|0|D|
+
+Poi ogni nodo invierà la propria tabella ai suoi vicini più volte, fino a raggiungere la convergenza, e le tabelle diventeranno:
+
+Tabella A
+|Nodo|Distanza|Next Hop|
+|-|-|-|
+|A|0|A|
+|C|7|D|
+|D|3|D|
+
+Tabella C
+|Nodo|Distanza|Next Hop|
+|-|-|-|
+|A|7|D|
+|C|0|C|
+|D|4|D|
+
+Tabella D
+|Nodo|Distanza|Next Hop|
+|-|-|-|
+|A|3|A|
+|C|4|C|
+|D|0|D|
+
+Che succede se cadono uno o più link? Viene fatta una unione delle tabelle tranne di quelle ricevute dal link in errore.
+* Il nodo scarta tutti i DV ricevuti da quel link
+* Ricalcola la propria tabella fondendo i DV
+* Distribuisce il nuovo DV ai vicini
+
+La caduta di un link può causare problemi come:
+* **Bouncing**: a causa di un tempo di vulnerabilità tra l'indisponibilità del link e l'invio del DV del nodo non più raggiungibile, l'aggiornamento dei DV farà divergere l'algoritmo fino allo scadere del TTL dei pacchetti.
+* **Divergenza**: un loop dovuto alla caduta di più link, per cui se un nodo diventa isolato, non c'è possibilità che l'algoritmo si stabilizzi.
+Ciò si chiama Count to Infinity, risolvibile solo tramite una convenzione rappresentativa del valore infinito con una distanza settata a un valore > del diametro della rete.
+
+Per risolvere questi problemi esistono tecniche come:
+* **Split Horizon**:
+* **Split Horizon con Poison Reverse**:
 
 ### Link State
 
