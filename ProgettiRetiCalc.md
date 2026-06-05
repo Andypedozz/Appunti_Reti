@@ -48,7 +48,6 @@
     Matricola n. 322918
 </div>
 
-
 <div style="page-break-after: always;"></div>
 
 # 1. Obiettivo del Progetto
