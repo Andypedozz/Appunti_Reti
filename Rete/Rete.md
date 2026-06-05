@@ -130,8 +130,8 @@ La IANA ha allocato 1/8 dello spazio di indirizzamento unicast IPv6, ossia quell
 
 Come in IPv4 si usa la notazione CIDR, e una singola interfaccia si indica con /128.
 Vediamo alcuni IPv6 speciali:
-* Unspecified: ::/128
-* Loopback: ::1/128
+* **Unspecified**: ::/128
+* **Loopback**: ::1/128
 
 Altri indirizzi speciali sono:
 * indirizzi riservati, pari a 1/256 dello spazio e hanno il primo byte = 0; usati da IETF e per IPv4 address embedding
@@ -139,3 +139,73 @@ Altri indirizzi speciali sono:
 Iniziano con i seguenti 9 bit: 1111 1110 1 **(da FE8x::/9 e FEFx::/9)**. Si dicono anche "**unregistered**" o "**nonroutable**". Questi si dividono poi in:
 * Link-local Addresses: sempre bloccati dai router, e quindi locali a ogni switched LAN o subnet **(FE8x, FE9x, FEAx, FEBx)**.
 * Site-Local Addresses: instradati dai router di una organizzazione solo nella rete privata (Site), quindi tra subnet ma non verso internet **(FECx, FEDx, FEEx, FEFx)**.
+
+In IPv6 ogni dispositivo ha un indirizzo pubblico visibile su Internet. Perciò si dicono global unicast (GUA).
+
+In IPv6 l'uso di indirizzi privati è utile per svolgere servizi che devono rimanere interni, come nell reti aziendali.
+
+### Prefix Delegation e Subnetting
+Il metodo più usato per configurare le CPE consiste nell'uso di DHCPv6 con Prefix Delegation.
+
+In sostanza, un router dell'ISP delega al router del cliente la possibilità di gestire un prefisso IPv6, di crearci sottoreti e assegnare IP pubblici a tutti i dispositivi in esse presenti. In Europa gli ISP dovrebbero delegare un prefisso statico /56 o /48 a ciascuna linea. Pertanto avrebbero la forma di
+
+<p style="text-align: center;">
+    2001:db8.aaaa::/48<br>
+    2001:db8:aaaa:1a00::/56
+</p>
+
+L'Interface ID di IPv6 occupa sempre la seconda metà dell'IP, quindi il prefisso delegato è divisibile in tante sottoreti (es. /64). Con un prefisso /56 possiamo creare 256 sottoreti /64 ($2^{64 - 56} = 2^{8}$). Gli IP assegnati ai dispositivi della rete vengono scelti da una o più di queste subnet /64, creando cosi sottoreti dedicate a quella cablata, quella WiFi, quella ospiti, e anche scenari più complessi.
+Ogni rete permette di avere circa 18 miliardi di miliardi di IPv6.
+
+Tutti gli IPv6 sono assegnabili manualmente o tramite DHCPv6.
+I device che supportano IPv6 hanno anche nativamente un IP link-local, con cui possono scoprire com'è fatta la rete e autoconfigurarsi assegnandosi un IPv6.
+
+Questo sistema si chiama **SLAAC** (Stateless Address Auto Configuration) e non richiede di tracciare in una lista gli IP assegnati.
+
+L'assegnazione può seguire due procedure:
+* **assegnazione casuale**: l'IPv6 viene generato casualmente
+* **sistema EUI-64**: l'Interface ID viene generato dal MAC della scheda di rete.
+
+### Altre novità di IPv6
+* è stato **rimosso** il campo **checksum** dall'header dei pacchetti
+* l'**header IPv6 è estensibile**, cioè permette di definire funzioni aggiuntive inserendo header a catena come contenuto del pacchetto
+* IPv6 non supporta gli indirizzi broadcast, ma solo unicast, anycast e multicast.
+* miglioramenti in ambito sicurezza:
+    * **IP Authentication Header**: fornisce ai pacchetti integrità e autenticità, ma non confidenzialità.
+    * **IP Encapsulation Security Payload (ESP)**: a differenza del precedente questa modalità dà integrità, autenticazione e confidenzialità.
+
+## Autonomous Systems e Algoritmi di Routing
+Le reti sono spesso identificate con gli **Autonomous System** (AS).
+Un **AS** è un **gruppo di network gestiti da fornitori di Internet**: sono quindi proprietà degli ISP.
+In altre parole un AS è una rete individuale su Internet e ogni rete, o AS, ha un id (**ASN**), assegnato dalla IANA. Gli ASN consentono agli AS di comunicare esternamente e internamente.
+I router che instradano internamente a un AS si dicono **interior router**, mentre quelli che instradano tra AS diversi si dicono **edge router**.
+
+In generale, ogni router mantiene in memoria una tabella di routing, che ha come minimi dati di ogni entry:
+* Un indirizzo di destinazione: l'IP del nodo destinazione o della rete che lo ospita
+* Il tipo di indirizzzo di destinazione: se la destinazione è direttamente collegata al router oppure è l'indirizzo di un altro router (next-hop router).
+
+Gli algoritmi di routing si dividono in:
+* Statici: le tabelle sono riempite da un amministratore e i valori non cambiano se non per azione dell'admin
+* Dinamici: le tabelle si aggiornano continuamente seguendo l'evoluzione della rete.
+
+Per trovare i percorsi migliori vi sono diverse metriche, come lunghezza del percorso, banda passante, affidabilità del link, ritardo, carico di rete.
+Due parametri universalmente accettati sono:
+* Hops: numero di nodi attraversati
+* Costo: somma dei costi dei link attraversati, misurati secondo una delle metriche sopracitate.
+
+Gli algoritmi di routing sono valutabili in base alla loro:
+* Ottimizzazione: abilità dell'algoritmo di scegliere la strada migliore
+* Semplicità: grado di funzionalità ed efficienza computazionale
+* Rapidità di convergenza: veolcità con cui la le tabelle dei router si re-stabilizzino dopo un cambiamento sulla rete
+* Scalabilità: capacità dei router di scegliere i percorsi migliori per i pacchetti che usavano un tratto di network non più disponibile (adattamento)
+* Robustezza: capacità di continuare a funzionare a fronte di guasti hardware, alto carico e traffico.
+
+### Distance Vector
+
+
+### Link State
+
+## Congestione
+
+
+
