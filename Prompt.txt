@@ -1,0 +1,159 @@
+Sei un esperto di **sicurezza informatica, network security e application security (AppSec)** con competenze avanzate nello stack **TCP/IP, HTTP/HTTPS, browser security e architetture web moderne**.
+
+Devi generare una **relazione tecnica completa e strutturata** su una web application composta da:
+
+* Frontend: React (Single Page Application)
+* Backend: Node.js con Express.js
+* Comunicazione: API REST su HTTP/HTTPS
+* Possibile utilizzo di cookie di sessione e/o token JWT
+
+L’obiettivo è produrre un’analisi delle vulnerabilità di sicurezza con particolare attenzione agli aspetti di **rete e comunicazione tra client e server**, includendo anche il contesto del browser.
+
+---
+
+# 🎯 OBIETTIVO
+
+Realizzare una relazione completa che analizzi le principali vulnerabilità di sicurezza di un’applicazione React + Express, includendo:
+
+* Vulnerabilità lato applicazione web
+* Vulnerabilità lato sessione e autenticazione
+* Vulnerabilità lato rete (TCP/IP, TLS, HTTP)
+* Interazione browser ↔ server
+
+Il focus deve essere su **analisi tecnica e mitigazione**, non su attacco.
+
+---
+
+# 📄 STRUTTURA OBBLIGATORIA DEL DOCUMENTO
+
+Il documento deve essere organizzato ESATTAMENTE nelle seguenti sezioni:
+
+---
+
+## 1. Introduzione
+
+* Descrizione dell’architettura React + Express
+* Flusso tipico di comunicazione client-server (SPA → API REST)
+* Concetti base di sicurezza web
+* Importanza della sicurezza in applicazioni distribuite
+
+---
+
+## 2. Elenco delle vulnerabilità
+
+Fornisci una panoramica sintetica delle vulnerabilità che verranno analizzate:
+
+* Cross-Site Scripting (XSS)
+* Cross-Site Request Forgery (CSRF)
+* SQL Injection
+* Furto e manipolazione dei cookie
+* Session Hijacking
+* Clickjacking
+* Man-in-the-Middle (MITM)
+* Attacchi a livello rete (DNS spoofing, ARP spoofing – concettuali)
+* Vulnerabilità HTTP/TLS e mancanza di header di sicurezza
+
+---
+
+## 3. Sezioni dedicate a ogni vulnerabilità
+
+Per ogni vulnerabilità elencata nella sezione precedente, crea una sezione dettagliata con questa struttura:
+
+### 🔴 Nome vulnerabilità
+
+Includere:
+
+1. **Descrizione tecnica**
+2. **Come si manifesta in React + Express**
+3. **Esempio di codice vulnerabile**
+
+   * Backend (Express.js)
+   * Frontend (React, se applicabile)
+4. **Scenario di attacco (solo descrizione teorica, non operativa)**
+5. **Impatto sulla sicurezza del sistema**
+6. **Versione corretta del codice (mitigata)**
+
+   * Backend sicuro
+   * Frontend sicuro
+7. **Mitigazioni**
+
+   * lato backend
+   * lato frontend
+   * lato rete
+
+---
+
+# 🌐 SEZIONE RETE (OBBLIGATORIA E APPROFONDITA)
+
+Devi includere una spiegazione tecnica chiara di:
+
+* Differenza tra HTTP e HTTPS
+* TLS e concetto di handshake (alto livello)
+* Rischi di Man-in-the-Middle (MITM)
+* Packet sniffing su reti non sicure
+* DNS spoofing (concettuale)
+* ARP spoofing (concettuale)
+* Sicurezza del trasporto dati
+
+---
+
+# 🧱 HTTP SECURITY HEADERS
+
+Devi includere esempi concreti di configurazione in Express (es. middleware `helmet`) con spiegazione di:
+
+* Content-Security-Policy (CSP)
+* Strict-Transport-Security (HSTS)
+* X-Frame-Options
+* X-Content-Type-Options
+* Referrer-Policy
+* Permissions-Policy
+
+---
+
+# 🛡️ MITIGAZIONI GLOBALI
+
+Distribuite nel documento, ma sempre presenti:
+
+## Backend (Express)
+
+* helmet middleware
+* rate limiting
+* validazione input (zod / joi / express-validator)
+* query sicure (prepared statements / ORM)
+
+## Frontend (React)
+
+* escaping automatico React
+* evitare uso di dangerouslySetInnerHTML
+* gestione sicura di token e sessioni
+
+## Rete
+
+* uso obbligatorio di HTTPS
+* cookie Secure / HttpOnly / SameSite
+* protezione TLS
+
+---
+
+# 4. Conclusioni
+
+* Sintesi delle vulnerabilità principali
+* Importanza della sicurezza multi-livello (frontend + backend + rete)
+* Principio di security by design
+* Riferimento concettuale a OWASP Top 10
+
+---
+
+# ⚠️ VINCOLI IMPORTANTI
+
+* Non fornire istruzioni operative per attacchi reali
+* Gli esempi devono essere esclusivamente **didattici e difensivi**
+* Il focus deve essere su prevenzione e mitigazione
+* Il codice deve essere realistico e simile a produzione
+* Linguaggio tecnico da relazione universitaria
+
+---
+
+# 🧾 OUTPUT ATTESO
+
+Un documento tecnico completo, coerente e ben strutturato, adatto a un progetto universitario di **Reti di Calcolatori e Sicurezza Informatica**, con esempi di codice, configurazioni Express e spiegazioni approfondite delle vulnerabilità e delle contromisure.

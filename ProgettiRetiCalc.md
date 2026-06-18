@@ -64,7 +64,7 @@ OWASP Top 10 è un documento standard di consapevolezza per sviluppatori e sicur
 
 # 2. Vulnerabilità principali
 
-Secondo OWASP, le principali aree di vulnerabilità e tipologie di attacchi a cui sono suscettibili gli applicativi web, facendo riferimento a OWASP Top 10:2025, sono:
+Secondo OWASP, le principali aree di vulnerabilità e tipologie di attacchi a cui sono suscettibili gli applicativi web, facendo riferimento a OWASP Top 10, sono:
 
 * A01 - Broken Access Control
 * A02 - Security Misconfiguration
@@ -81,7 +81,7 @@ Andiamo ora ad analizzare ognuna di queste vulnerabilità singolarmente e in mod
 
 <div style="page-break-after: always;"></div>
 
-# 3. A01:2025 — Broken Access Control
+# 3. A01 — Broken Access Control
 
 La vulnerabilità di tipo **Broken Access Control** si verifica quando il sistema non applica correttamente le restrizioni sugli accessi alle risorse.
 
@@ -146,7 +146,7 @@ app.get('/api/users/:id', authenticate, async (req, res) => {
 
 <div style="page-break-after: always;"></div>
 
-# 4. A02:2025 — Security Misconfiguration
+# 4. A02 — Security Misconfiguration
 
 Le vulnerabilità di configurazione rappresentano errori derivanti da configurazioni errate di server, framework, middleware o servizi.
 
@@ -208,7 +208,7 @@ app.use(cors({
 
 <div style="page-break-after: always;"></div>
 
-# 5. A03:2025 — Software Supply Chain Failures
+# 5. A03 — Software Supply Chain Failures
 
 Questa categoria riguarda vulnerabilità introdotte da dipendenze esterne, librerie compromesse o componenti software non sicuri.
 
@@ -270,7 +270,7 @@ Aggiornare regolarmente le dipendenze:
 
 <div style="page-break-after: always;"></div>
 
-# 6. A04:2025 — Cryptographic Failures
+# 6. A04 — Cryptographic Failures
 
 Le vulnerabilità crittografiche derivano dall’uso scorretto della cifratura o dalla gestione errata delle credenziali.
 
@@ -348,7 +348,7 @@ Le chiavi segrete devono essere conservate in:
 
 <div style="page-break-after: always;"></div>
 
-# 7. A05:2025 — Injection (SQL Injection)
+# 7. A05 — Injection (SQL Injection)
 
 Le vulnerabilità di Injection permettono a un attaccante di eseguire codice o query arbitrarie.
 
@@ -527,7 +527,7 @@ app.get('/form', (req, res) => {
 
 <div style="page-break-after: always;"></div>
 
-# 10. A06:2025 — Insecure Design
+# 10. A06 — Insecure Design
 
 Questa categoria riguarda errori progettuali nell’architettura dell’applicazione.
 
@@ -574,7 +574,7 @@ Mai fidarsi dei dati provenienti dal client.
 
 <div style="page-break-after: always;"></div>
 
-# 11. A07:2025 — Authentication Failures
+# 11. A07 — Authentication Failures
 
 Questa categoria comprende errori relativi all’autenticazione e gestione delle sessioni.
 
@@ -623,7 +623,7 @@ app.use('/login', rateLimit({
 
 <div style="page-break-after: always;"></div>
 
-# 12. A08:2025 — Software or Data Integrity Failures
+# 12. A08 — Software or Data Integrity Failures
 
 Questa categoria riguarda problemi di integrità del software e dei dati.
 
@@ -670,7 +670,7 @@ Evitare sempre `eval()`.
 
 <div style="page-break-after: always;"></div>
 
-# 13. A09:2025 — Security Logging & Alerting Failures
+# 13. A09 — Security Logging & Alerting Failures
 
 Questa vulnerabilità riguarda logging e monitoraggio insufficienti.
 
@@ -719,7 +719,7 @@ I log devono:
 
 <div style="page-break-after: always;"></div>
 
-# 14. A10:2025 — Mishandling of Exceptional Conditions
+# 14. A10 — Mishandling of Exceptional Conditions
 
 Questa categoria riguarda la gestione errata delle eccezioni.
 
