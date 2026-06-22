@@ -1,18 +1,9 @@
-Ecco la relazione tecnica completa, strutturata secondo le specifiche richieste.
 
----
+# **Relazione Tecnica: Analisi di Sicurezza di un'Architettura Web React + Express.js**
 
-# Relazione Tecnica: Analisi di Sicurezza di un'Architettura Web React + Express.js
+## **1. Introduzione**
 
-**Ambito:** Sicurezza Informatica, Network Security, Application Security (AppSec)
-**Stack tecnologico:** React (SPA), Node.js con Express.js, API REST
-**Focus:** Vulnerabilità di rete e comunicazione client-server, sicurezza applicativa, interazione browser.
-
----
-
-## 1. Introduzione
-
-### Descrizione dell'architettura React + Express
+### **Descrizione dell'architettura React + Express**
 L'architettura in esame rappresenta un modello moderno e diffuso per lo sviluppo di applicazioni web. È composta da due entità principali disaccoppiate: un frontend e un backend.
 
 - **Frontend (React Single Page Application):** L'interfaccia utente è interamente gestita lato client dal browser. React costruisce e manipola il DOM in modo efficiente. La SPA viene servita inizialmente come un insieme di file statici (HTML, CSS, JS) e successivamente comunica con il backend esclusivamente via API per scambiare dati in formato JSON.
@@ -29,16 +20,16 @@ L'architettura in esame rappresenta un modello moderno e diffuso per lo sviluppo
 
 <div style="page-break-after: always;"></div>
 
-### Concetti base di sicurezza web
+### **Concetti base di sicurezza web**
 La sicurezza in questo modello si basa sul principio del "mai fidarsi del client". Il browser è un ambiente completamente controllabile dall'utente e quindi ostile per definizione. Ogni dato proveniente dal client deve essere considerato potenzialmente malevolo. I pilastri fondamentali sono la **Confidenzialità** (proteggere i dati da accessi non autorizzati), l'**Integrità** (garantire che i dati non vengano alterati) e la **Disponibilità** (garantire l'accesso ai servizi), noti come triade CIA. A questi si aggiungono Autenticazione (verifica dell'identità) e Autorizzazione (verifica dei permessi).
 
-### Importanza della sicurezza in applicazioni distribuite
+### **Importanza della sicurezza in applicazioni distribuite**
 In un'architettura distribuita, la superficie d'attacco si amplia notevolmente. La sicurezza non è più confinata a un singolo monolite, ma si estende al canale di comunicazione, ai due endpoint (client e server) e alle infrastrutture di rete intermedie. Una falla in uno qualsiasi di questi strati può compromettere l'intero sistema, rendendo essenziale un approccio difensivo a più livelli (defense in depth).
 
 
 <div style="page-break-after: always;"></div>
 
-## 2. Elenco delle vulnerabilità
+## **2. Elenco delle vulnerabilità**
 
 Di seguito sono elencate le vulnerabilità analizzate in questa relazione, classificate per area di competenza.
 
@@ -60,9 +51,7 @@ Di seguito sono elencate le vulnerabilità analizzate in questa relazione, class
 
 <div style="page-break-after: always;"></div>
 
-## 3. Sezioni dedicate a ogni vulnerabilità
-
-### 🔴 Cross-Site Scripting (XSS)
+##  **Cross-Site Scripting (XSS)**
 
 **1. Descrizione tecnica**
 Lo XSS è un attacco a iniezione di codice che consente a un aggressore di eseguire script JavaScript malevoli nel browser della vittima. Si verifica quando un'applicazione include dati non validati o non sanificati nell'output che genera. Si divide principalmente in tre tipi: Riflesso (il payload è parte della richiesta HTTP), Persistente/Stored (il payload è salvato nel database) e DOM-based (la vulnerabilità risiede nel codice JavaScript lato client).
@@ -152,7 +141,7 @@ function SafeHtmlComponent({ rawHtml }) {
 
 <div style="page-break-after: always;"></div>
 
-### 🔴 SQL Injection
+##  **SQL Injection**
 
 **1. Descrizione tecnica**
 Una vulnerabilità di SQL Injection si verifica quando dati forniti dall'utente vengono concatenati direttamente in una query SQL e inviati al database. Un aggressore può iniettare codice SQL malevolo per manipolare la query, leggere dati non autorizzati, modificarli o addirittura eseguire comandi sul sistema operativo del database server.
@@ -225,7 +214,7 @@ app.get('/api/users', (req, res) => {
 
 <div style="page-break-after: always;"></div>
 
-### 🔴 Cross-Site Request Forgery (CSRF)
+##  **Cross-Site Request Forgery (CSRF)**
 
 **1. Descrizione tecnica**
 CSRF è un attacco che forza un utente autenticato a eseguire azioni indesiderate su un'applicazione web. Sfrutta la fiducia che un sito ha nell'identità di un utente il cui browser invia automaticamente credenziali (come i cookie di sessione) con ogni richiesta. L'attaccante induce la vittima a compiere un'azione (es. cliccare un link, caricare un'immagine) che genera una richiesta malevola verso il sito target.
@@ -351,7 +340,7 @@ function ChangeEmailForm() {
 
 <div style="page-break-after: always;"></div>
 
-### 🔴 Furto e Manipolazione dei Cookie / Session Hijacking
+##  **Furto e Manipolazione dei Cookie / Session Hijacking**
 
 **1. Descrizione tecnica**
 I cookie di sessione sono l'identificatore principale di un utente dopo l'autenticazione. Il furto di questo identificatore permette all'attaccante di "impersonare" la vittima senza conoscerne le credenziali. La manipolazione, invece, può alterare dati fidati presenti nel cookie (se non firmati) per bypassare controlli di autorizzazione o corrompere lo stato dell'applicazione.
@@ -421,7 +410,7 @@ app.set('trust proxy', 1); // Necessario dietro reverse proxy (es. Nginx)
 
 <div style="page-break-after: always;"></div>
 
-### 🔴 Clickjacking
+##  **Clickjacking**
 
 **1. Descrizione tecnica**
 Il clickjacking (o "UI redress attack") è una tecnica che induce un utente a cliccare su un elemento apparentemente innocuo, mentre in realtà sta cliccando su un elemento trasparente o nascosto di un'altra pagina, sovrapposta tramite un iframe. L'utente pensa di cliccare un pulsante sulla pagina che sta vedendo, ma il suo click viene "dirottato" verso l'elemento della pagina in iframe.
@@ -463,7 +452,7 @@ app.use(helmet.frameguard({ action: 'deny' })); // Impedisce del tutto il carica
 - **Lato Frontend:**
     - Nessuna mitigazione significativa. È una difesa a livello di risposta HTTP del server.
 
-### 🔴 Man-in-the-Middle (MITM)
+##  **Man-in-the-Middle (MITM)**
 
 **1. Descrizione tecnica**
 Un attacco MITM si verifica quando un aggressore si inserisce in modo trasparente nella comunicazione tra due parti (client e server) per intercettare, e potenzialmente alterare, i dati scambiati. L'attaccante fa credere a entrambe le parti di star comunicando direttamente tra loro. Questo è tipicamente realizzato tramite ARP spoofing su reti locali, rogue access point Wi-Fi o compromissione di un router.
@@ -541,18 +530,16 @@ https.createServer(options, app).listen(443, () => console.log('Server HTTPS sul
 - **Lato Frontend:**
     - Le chiamate API devono sempre usare URL `https://`.
 
----
+## **Approfondimento sulla Sicurezza della Rete**
 
-## 🌐 Approfondimento sulla Sicurezza della Rete
-
-### Differenza tra HTTP e HTTPS
+### **Differenza tra HTTP e HTTPS**
 - **HTTP (Hypertext Transfer Protocol):** Protocollo a livello applicativo che trasmette dati in chiaro. Ogni intermediario sulla rete (router, switch, ISP) può leggere e modificare il contenuto della comunicazione.
 - **HTTPS (HTTP over TLS/SSL):** Avvolge HTTP in un tunnel crittografico fornito da TLS (Transport Layer Security). Garantisce tre proprietà fondamentali:
     1.  **Cifratura:** I dati sono illeggibili per terzi.
     2.  **Integrità:** I dati non possono essere alterati durante il transito.
     3.  **Autenticazione del Server:** Il server prova la sua identità al client tramite un certificato digitale, prevenendo attacchi di impersonificazione.
 
-### TLS e concetto di handshake
+### **TLS e concetto di handshake**
 L'handshake TLS è la procedura iniziale che stabilisce una connessione sicura:
 1.  **ClientHello:** Il client invia al server la versione TLS supportata, gli algoritmi crittografici disponibili (cipher suite) e un numero casuale.
 2.  **ServerHello:** Il server risponde scegliendo la cipher suite, invia il suo numero casuale e invia il suo certificato digitale (contenente la chiave pubblica).
@@ -561,32 +548,32 @@ L'handshake TLS è la procedura iniziale che stabilisce una connessione sicura:
 
 Questo processo garantisce che le chiavi di sessione siano note solo a client e server.
 
-### Rischi di Man-in-the-Middle (MITM)
+### **Rischi di Man-in-the-Middle (MITM)**
 Come discusso, su una rete non sicura (es. HTTP) un MITM può leggere e alterare ogni dato. Su una rete configurata con HTTPS, un MITM deve superare la barriera della cifratura TLS. Tecniche come l'ARP spoofing (iniezione di associazioni IP-MAC false nella cache ARP della vittima) o il DNS spoofing (avvelenamento della cache DNS per risolvere un hostname verso un IP malevolo) sono vettori di attacco a livello 2 e 3 che permettono di instradare il traffico della vittima verso l'attaccante, ma senza una CA compromessa, l'attaccante non sarà in grado di presentare un certificato valido per il dominio target. Il browser mostrerà un avviso di sicurezza. Tuttavia, in scenari senza HSTS, un attaccante può usare SSLstrip per downgradare forzatamente la connessione HTTPS a HTTP in modo trasparente per l'utente, aggirando la protezione TLS.
 
-### Packet Sniffing su reti non sicure
+### **Packet Sniffing su reti non sicure**
 Su una rete dove il traffico non è cifrato (HTTP puro), un qualsiasi strumento di packet sniffing (Wireshark, tcpdump) può catturare tutti i pacchetti in transito. Un attaccante può facilmente filtrare il traffico HTTP e ricostruire intere sessioni di navigazione, leggendo ogni form inviato, ogni cookie, ogni token JWT passato in header o parametri URL. Su una rete switchata, l'ARP spoofing diventa il metodo più comune per forzare il traffico a passare attraverso la macchina dell'attaccante e abilitare lo sniffing.
 
-### DNS Spoofing (Concettuale)
+### **DNS Spoofing (Concettuale)**
 L'attaccante corrompe la cache di un resolver DNS, facendo sì che la risoluzione di un nome di dominio (es. `banca.com`) restituisca un indirizzo IP da lui controllato, non quello del server legittimo. La vittima, digitando l'URL corretto, viene reindirizzata a una copia malevola del sito. Su HTTP, l'inganno è impercettibile. Su HTTPS, l'attaccante non può presentare un certificato valido per `banca.com`, quindi il browser bloccherà la connessione e avviserà l'utente, a meno che la vittima non ignori attivamente l'avviso o non abbia precedentemente installato un certificato CA dell'attaccante (tipico in ambienti enterprise con TLS inspection).
 
-### ARP Spoofing (Concettuale)
+### **ARP Spoofing (Concettuale)**
 L'Address Resolution Protocol (ARP) risolve indirizzi IP in indirizzi MAC su una rete locale. Un attaccante può inviare messaggi ARP falsificati, associando il suo MAC all'IP del gateway di default. Di conseguenza, tutto il traffico della vittima destinato a internet viene inviato all'attaccante invece che al router. L'attaccante può quindi inoltrare il traffico (agendo da MITM) per lo sniffing o la modifica. È un attacco potente ma limitato alla rete locale dell'attaccante.
 
-### Sicurezza del trasporto dati
+### **Sicurezza del trasporto dati**
 Garantire la sicurezza del trasporto dati significa assicurare che il canale tra client e server sia autentico, confidenziale e integro. Le best practice includono:
 1.  **Adozione universale di HTTPS con TLS 1.2 o 1.3.**
 2.  **Configurazione di HSTS** per eliminare la finestra di downgrade.
 3.  **Disabilitazione di cipher suite obsolete e insicure** a livello di server.
 4.  Per applicazioni ad alta sicurezza, prendere in considerazione l'uso del **Certificate Pinning** in client controllati (es. app mobile), con la consapevolezza dei rischi di gestione.
 
----
+<div style="page-break-after: always;"></div>
 
-## 🧱 HTTP Security Headers
+## **HTTP Security Headers**
 
 Gli header di sicurezza HTTP sono un insieme di direttive che il server invia al browser per istruirlo su comportamenti di sicurezza aggiuntivi. Sono la prima e più basilare linea di difesa contro attacchi come XSS e Clickjacking.
 
-### Configurazione in Express con Helmet
+### **Configurazione in Express con Helmet**
 `helmet` è un middleware per Express.js che imposta una serie di questi header di default. È la soluzione consigliata per la sua semplicità e manutenibilità.
 
 ```javascript
@@ -631,6 +618,8 @@ Di seguito l'analisi dei singoli header:
     - **Header:** `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
     - **Spiegazione:** Forza il browser a connettersi al dominio e a tutti i suoi sottodomini esclusivamente tramite HTTPS per la durata di `max-age` (in secondi). Previene attacchi di downgrade (SSLstrip) e impedisce all'utente di cliccare su avvisi di certificati non validi per accedere al sito. L'opzione `preload` permette di includere il dominio in una lista preinstallata nei browser, rendendo l'uso di HTTPS obbligatorio fin dalla prima connessione.
 
+<div style="page-break-after: always;"></div>
+
 3.  **X-Frame-Options**
     - **Header:** `X-Frame-Options: DENY`
     - **Spiegazione:** Previene il Clickjacking indicando al browser se è permesso renderizzare la pagina all'interno di un elemento `<frame>`, `<iframe>` o `<object>`. `DENY` lo vieta a chiunque, `SAMEORIGIN` lo permette solo se l'iframe e la pagina contenitore sono sullo stesso dominio. È utile per la compatibilità con browser più vecchi, ma è oggi soppiantata dalla direttiva CSP `frame-ancestors`.
@@ -647,20 +636,20 @@ Di seguito l'analisi dei singoli header:
     - **Header:** `Permissions-Policy: camera=(), geolocation=(self "https://maps.example.com"), microphone=()`
     - **Spiegazione:** (In precedenza `Feature-Policy`). Permette di abilitare, disabilitare o limitare l'uso di API del browser e funzionalità hardware (fotocamera, microfono, geolocalizzazione, accelerometro, ecc.). Ad esempio, `camera=()` la disabilita per l'intera origine. Questo aiuta a ridurre la superficie d'attacco e a prevenire l'uso malevolo di queste API in caso di XSS.
 
----
+<div style="page-break-after: always;"></div>
 
-## 4. Conclusioni
+## **4. Conclusioni**
 
-### Sintesi delle vulnerabilità principali
+### **Sintesi delle vulnerabilità principali**
 L'analisi condotta evidenzia come un'applicazione moderna, sebbene sia basata su stack tecnologici avanzati come React e Express, rimanga esposta a un ampio spettro di vulnerabilità. Lo **XSS** e le **SQL Injection** rappresentano le falle più critiche a livello di codice applicativo, rispettivamente lato client e server. Sul fronte della rete, l'assenza di **HTTPS** o una sua configurazione lacunosa espone l'applicazione a intercettazioni (**MITM**) che vanificano ogni altra misura di sicurezza. La corretta gestione della sessione e l'implementazione di difese come la protezione **CSRF** e gli **HTTP Security Headers** completano il quadro delle difese indispensabili.
 
-### Importanza della sicurezza multi-livello
+### **Importanza della sicurezza multi-livello**
 Nessuna singola misura di sicurezza è sufficiente. Un approccio di **"defense in depth"** (difesa a più livelli) è l'unica strategia efficace. Un firewall a livello di rete è inutile se l'applicazione è vulnerabile a SQL injection. La crittografia HTTPS è vanificata se un attacco XSS può leggere i dati dal DOM dopo la decifratura. La sicurezza deve essere pervasiva e ridondante: validazione input (backend), escaping output (frontend), cifratura del canale (rete), hardening delle risposte HTTP (server) e gestione sicura delle sessioni (back-end) devono coesistere e rafforzarsi a vicenda.
 
-### Principio di Security by Design
+### **Principio di Security by Design**
 La sicurezza non può essere un'aggiunta a posteriori. Deve essere integrata in ogni fase del ciclo di sviluppo software. Dal design dell'architettura (separazione frontend/backend, API REST che comunicano in JSON), alla scrittura del codice (prepared statements per ogni query, escaping in React), fino al deployment e alla configurazione (abilitazione di TLS e helmet su Express). Un processo di sviluppo che include threat modeling, code review focalizzate sulla sicurezza e test di penetrazione periodici è essenziale per costruire e mantenere un'applicazione robusta.
 
-### Riferimento concettuale a OWASP Top 10
+### **Riferimento concettuale a OWASP Top 10**
 Le vulnerabilità discusse si allineano direttamente alle categorie di rischio più critiche identificate dall'**OWASP Top 10**, il documento di riferimento globale per la sicurezza applicativa:
 - **A01: Broken Access Control** (non trattato in dettaglio ma correlato a sessioni e autorizzazioni).
 - **A02: Cryptographic Failures** (MITM, mancato uso di HTTPS, TLS configurato male).
@@ -668,6 +657,3 @@ Le vulnerabilità discusse si allineano direttamente alle categorie di rischio p
 - **A05: Security Misconfiguration** (mancanza di Security Headers, cookie non protetti).
 - **A07: Identification and Authentication Failures** (Session Hijacking, furto di cookie).
 Questo allineamento sottolinea come le best practice di sicurezza discusse siano universali e fondamentali per qualsiasi applicazione web distribuita.
-
----
-*Questa relazione fornisce una base tecnica completa per comprendere e mitigare le vulnerabilità di sicurezza in un contesto applicativo moderno, con un focus particolare sulle interazioni di rete e sull'architettura client-server.*
