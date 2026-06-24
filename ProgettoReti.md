@@ -9,7 +9,7 @@ L'architettura in esame rappresenta un modello moderno e diffuso per lo sviluppo
 - **Frontend (React Single Page Application):** L'interfaccia utente è interamente gestita lato client dal browser. React costruisce e manipola il DOM in modo efficiente. La SPA viene servita inizialmente come un insieme di file statici (HTML, CSS, JS) e successivamente comunica con il backend esclusivamente via API per scambiare dati in formato JSON.
 - **Backend (Node.js con Express.js):** Il server applicativo espone un insieme di endpoint API RESTful. Non gestisce la logica di presentazione o lo stato della UI, ma si occupa di business logic, validazione dei dati, autenticazione, autorizzazione e interazione con il database.
 
-### Flusso tipico di comunicazione client-server (SPA → API REST)
+### **Flusso tipico di comunicazione client-server (SPA → API REST)**
 1.  **Richiesta Iniziale:** Il browser (client) richiede l'index.html al server che ospita la SPA (spesso un CDN o lo stesso server Express che serve file statici).
 2.  **Caricamento SPA:** Il browser scarica e interpreta HTML, CSS e il bundle JavaScript di React. L'applicazione React si inizializza.
 3.  **Interazione Utente:** L'utente compie un'azione (es. login, caricamento dati). Il codice JavaScript nell'applicazione React effettua una chiamata HTTP asincrona (utilizzando `fetch` o librerie come `axios`) a un endpoint dell'API REST di Express.
@@ -132,6 +132,10 @@ function SafeHtmlComponent({ rawHtml }) {
     - Non generare mai HTML da endpoint API. Restituire sempre dati in formato JSON. Lasciare il rendering al frontend.
     - Validare e sanitizzare tutti gli input in ingresso tramite librerie come `express-validator`.
     - Impostare l'header HTTP `Content-Type: application/json` in modo esplicito.
+
+<br>
+<br>
+
 - **Lato Frontend (React):**
     - Sfruttare l'escaping automatico di JSX, passando i dati dinamici come "children" o altre props, mai tramite `dangerouslySetInnerHTML`.
     - Se l'uso di `dangerouslySetInnerHTML` è assolutamente inevitabile (es. rendering di contenuti da un CMS fidato), sanitizzare SEMPRE l'HTML con una libreria robusta e manutenuta come DOMPurify prima di passarlo alla prop.
@@ -242,6 +246,7 @@ app.post('/api/change-email', (req, res) => {
   res.send('Email aggiornata con successo');
 });
 ```
+<!-- <div style="page-break-after: always;"></div> -->
 
 *Frontend (React) - (non vulnerabile di per sé, ma invia la richiesta)*
 ```jsx
@@ -253,7 +258,6 @@ function ChangeEmailForm() {
     // I cookie di sessione sono automaticamente inclusi dal browser
     await fetch('/api/change-email', { method: 'POST', body: JSON.stringify({ email }), headers: {'Content-Type': 'application/json'} });
   };
-  // ... JSX del form
 }
 ```
 
@@ -272,6 +276,8 @@ function ChangeEmailForm() {
 
 **5. Impatto sulla sicurezza del sistema**
 Alto. Permette a un attaccante di eseguire azioni indesiderate per conto di un utente autenticato, come cambiare dettagli dell'account, effettuare transazioni finanziarie o cancellare dati.
+
+<!-- <div style="page-break-after: always;"></div> -->
 
 **6. Versione corretta del codice (mitigata)**
 
@@ -302,7 +308,6 @@ app.post('/api/change-email', csrfProtection, (req, res) => {
 
 *Frontend (React) - Invio del token CSRF*
 ```jsx
-function ChangeEmailForm() {
   const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
@@ -324,8 +329,6 @@ function ChangeEmailForm() {
       body: JSON.stringify({ email })
     });
   };
-  // ... JSX del form
-}
 ```
 
 **7. Mitigazioni**
@@ -449,8 +452,8 @@ app.use(helmet.frameguard({ action: 'deny' })); // Impedisce del tutto il carica
 - **Lato Backend:**
     - Impostare l'header HTTP `X-Frame-Options` a `DENY` (blocco totale) o `SAMEORIGIN` (consentito solo dal proprio dominio). Il middleware `helmet` di Express lo rende banale.
     - In alternativa, usare la direttiva `frame-ancestors 'none'` o `frame-ancestors 'self'` nella **Content-Security-Policy**. Questo approccio è più moderno e flessibile.
-- **Lato Frontend:**
-    - Nessuna mitigazione significativa. È una difesa a livello di risposta HTTP del server.
+
+<div style="page-break-after: always;"></div>
 
 ##  **Man-in-the-Middle (MITM)**
 
@@ -485,6 +488,8 @@ app.listen(3000, () => console.log('Server HTTP in ascolto sulla porta 3000'));
 
 **5. Impatto sulla sicurezza del sistema**
 Critico. Può portare al furto di qualsiasi dato trasmesso: credenziali, dettagli finanziari, token di sessione, JWT, informazioni personali.
+
+<div style="page-break-after: always;"></div>
 
 **6. Versione corretta del codice (mitigata)**
 
@@ -527,8 +532,6 @@ https.createServer(options, app).listen(443, () => console.log('Server HTTPS sul
     - **Certificate Pinning (in ambienti controllati):** Fissare il certificato atteso nel client (es. app mobile) per prevenire attacchi con certificati fraudolenti emessi da CA compromesse.
 - **Lato Backend:**
     - Forzare il reindirizzamento di tutte le richieste HTTP a HTTPS a livello di applicazione o di reverse proxy.
-- **Lato Frontend:**
-    - Le chiamate API devono sempre usare URL `https://`.
 
 ## **Approfondimento sulla Sicurezza della Rete**
 
@@ -618,8 +621,6 @@ Di seguito l'analisi dei singoli header:
     - **Header:** `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
     - **Spiegazione:** Forza il browser a connettersi al dominio e a tutti i suoi sottodomini esclusivamente tramite HTTPS per la durata di `max-age` (in secondi). Previene attacchi di downgrade (SSLstrip) e impedisce all'utente di cliccare su avvisi di certificati non validi per accedere al sito. L'opzione `preload` permette di includere il dominio in una lista preinstallata nei browser, rendendo l'uso di HTTPS obbligatorio fin dalla prima connessione.
 
-<div style="page-break-after: always;"></div>
-
 3.  **X-Frame-Options**
     - **Header:** `X-Frame-Options: DENY`
     - **Spiegazione:** Previene il Clickjacking indicando al browser se è permesso renderizzare la pagina all'interno di un elemento `<frame>`, `<iframe>` o `<object>`. `DENY` lo vieta a chiunque, `SAMEORIGIN` lo permette solo se l'iframe e la pagina contenitore sono sullo stesso dominio. È utile per la compatibilità con browser più vecchi, ma è oggi soppiantata dalla direttiva CSP `frame-ancestors`.
@@ -636,7 +637,6 @@ Di seguito l'analisi dei singoli header:
     - **Header:** `Permissions-Policy: camera=(), geolocation=(self "https://maps.example.com"), microphone=()`
     - **Spiegazione:** (In precedenza `Feature-Policy`). Permette di abilitare, disabilitare o limitare l'uso di API del browser e funzionalità hardware (fotocamera, microfono, geolocalizzazione, accelerometro, ecc.). Ad esempio, `camera=()` la disabilita per l'intera origine. Questo aiuta a ridurre la superficie d'attacco e a prevenire l'uso malevolo di queste API in caso di XSS.
 
-<div style="page-break-after: always;"></div>
 
 ## **4. Conclusioni**
 

@@ -168,8 +168,8 @@ async function csma_cd() {
 
   step("Backoff casuale");
 
-  const backoffA = 3;
-  const backoffB = 5;
+  let backoffA = Math.floor(Math.random() * 4) + 1;
+  let backoffB = Math.floor(Math.random() * 4) + 1;;
 
   console.log(
     `${node("A", C.cyan)} attende ${backoffA} slot`
@@ -228,8 +228,8 @@ async function csma_ca() {
 
   step("Backoff preventivo");
 
-  let backoffA = 3;
-  let backoffB = 5;
+  let backoffA = Math.floor(Math.random() * 4) + 1;
+  let backoffB = Math.floor(Math.random() * 4) + 1;;
 
   console.log(
     `${node("A", C.cyan)} backoff = ${backoffA}`
