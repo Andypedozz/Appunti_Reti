@@ -542,14 +542,15 @@ https.createServer(options, app).listen(443, () => console.log('Server HTTPS sul
     2.  **Integrità:** I dati non possono essere alterati durante il transito.
     3.  **Autenticazione del Server:** Il server prova la sua identità al client tramite un certificato digitale, prevenendo attacchi di impersonificazione.
 
-### **TLS e concetto di handshake**
-L'handshake TLS è la procedura iniziale che stabilisce una connessione sicura:
-1.  **ClientHello:** Il client invia al server la versione TLS supportata, gli algoritmi crittografici disponibili (cipher suite) e un numero casuale.
-2.  **ServerHello:** Il server risponde scegliendo la cipher suite, invia il suo numero casuale e invia il suo certificato digitale (contenente la chiave pubblica).
-3.  **Autenticazione e Pre-Master Secret:** Il client verifica il certificato del server. Genera un "Pre-Master Secret", lo cifra con la chiave pubblica del server e lo invia. Solo il server, con la sua chiave privata, può decifrarlo.
-4.  **Generazione Chiavi di Sessione:** Sia client che server usano i due numeri casuali e il Pre-Master Secret per generare indipendentemente la stessa "Master Secret", da cui derivano le chiavi di sessione simmetriche per cifrare e decifrare la comunicazione successiva.
+**TLS e concetto di handshake**  
+L'handshake TLS è la procedura iniziale che permette a client e server di stabilire una connessione sicura.
 
-Questo processo garantisce che le chiavi di sessione siano note solo a client e server.
+1.  **ClientHello**: il client invia al server la versione TLS supportata, le suite crittografiche disponibili (_cipher suites_) e un numero casuale.
+2.  **ServerHello**: il server seleziona una _cipher suite_, invia il proprio numero casuale e il certificato digitale contenente la sua chiave pubblica.
+3.  **Autenticazione e scambio del segreto condiviso**: il client verifica il certificato del server e viene eseguito un meccanismo di scambio delle chiavi che permette a entrambe le parti di ottenere un segreto condiviso (nelle versioni più vecchie di TLS ciò avveniva tramite l'invio di un _Pre-Master Secret_ cifrato con la chiave pubblica del server).
+4.  **Generazione delle chiavi di sessione**: client e server derivano dallo stesso segreto condiviso e dai numeri casuali le chiavi di sessione simmetriche, che verranno utilizzate per cifrare e autenticare la comunicazione successiva.
+
+Questo processo garantisce che le chiavi di sessione siano note soltanto al client e al server.
 
 ### **Rischi di Man-in-the-Middle (MITM)**
 Come discusso, su una rete non sicura (es. HTTP) un MITM può leggere e alterare ogni dato. Su una rete configurata con HTTPS, un MITM deve superare la barriera della cifratura TLS. Tecniche come l'ARP spoofing (iniezione di associazioni IP-MAC false nella cache ARP della vittima) o il DNS spoofing (avvelenamento della cache DNS per risolvere un hostname verso un IP malevolo) sono vettori di attacco a livello 2 e 3 che permettono di instradare il traffico della vittima verso l'attaccante, ma senza una CA compromessa, l'attaccante non sarà in grado di presentare un certificato valido per il dominio target. Il browser mostrerà un avviso di sicurezza. Tuttavia, in scenari senza HSTS, un attaccante può usare SSLstrip per downgradare forzatamente la connessione HTTPS a HTTP in modo trasparente per l'utente, aggirando la protezione TLS.
